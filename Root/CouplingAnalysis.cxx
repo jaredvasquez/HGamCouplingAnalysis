@@ -43,13 +43,13 @@ EL::StatusCode CouplingAnalysis::createOutput()
   if (m_reweightHiggsPt) std::cout << "*** !!! REWEIGHTING HIGGS PT !!! ***" << std::endl;
 
   // Create Histograms
-  histoStore()->createTH2F( "h2_catICHEP_tbin", 40, -0.5, 39.5, 13, 0.5, 13.5 );
-  histoStore()->createTH2F( "h2_catSTXS_tbin",  40, -0.5, 39.5, 30, 0.5, 30.5 );
-  histoStore()->createTH2F( "h2_catSTXS_HCombBin", 53, -0.5, 52.5, 30, 0.5, 30.5 );
+  int nCats = 30;
+  histoStore()->createTH2F( "h2_catSTXS",  40, -0.5, 39.5, nCats, 0.5, nCats+0.5 );
+  //histoStore()->createTH2F( "h2_catSTXS_HComb", 53, -0.5, 52.5, 30, 0.5, 30.5 );
   histoStore()->createTH1F( "h_truthAcc_weightMC", 40, -0.5, 39.5 );
   histoStore()->createTH1F( "h_truthAcc_weight",   40, -0.5, 39.5 );
 
-  for ( int icat(1); icat < 30; icat++ ) {
+  for ( int icat(1); icat < nCats; icat++ ) {
     TString histName = TString::Format("h_cat%d_myy",icat);
     histoStore()->createTH1F(histName, 55, 105, 160, ";m_{#gamma#gamma} [GeV];Events / GeV");
   }
