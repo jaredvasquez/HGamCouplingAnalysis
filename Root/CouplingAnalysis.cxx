@@ -89,7 +89,6 @@ EL::StatusCode CouplingAnalysis::execute()
   // Important to keep this, so that internal tools / event variables are filled properly.
   HgammaAnalysis::execute();
 
-
   // Blind the data
   if (isData() && var::m_yy() > 120*HG::GeV && var::m_yy() < 130*HG::GeV) return EL::StatusCode::SUCCESS;
 
@@ -115,7 +114,8 @@ EL::StatusCode CouplingAnalysis::execute()
 
     // Fix a bug in the STXS tool, remove this for new samples
     int   stxsNJ30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
-    double stxsHPT = eventInfo()->auxdata<float>("HTXS_Higgs_pt");
+    double stxsHPT = var::pT_h1.truth()*HG::invGeV; 
+    //double stxsHPT = eventInfo()->auxdata<float>("HTXS_Higgs_pt")*HG::invGeV;
     stage1 = STXS::fixBins_stage1( stage1, stxsNJ30, stxsHPT );
   }
 
