@@ -1,3 +1,4 @@
+#ifndef HGamCouplingAnalysis_CouplingAnalysis_H
 #define HGamCouplingAnalysis_CouplingAnalysis_H
 
 #include "HGamAnalysisFramework/HgammaAnalysis.h"

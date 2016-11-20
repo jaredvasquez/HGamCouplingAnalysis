@@ -28,10 +28,12 @@ namespace HIGGS {
   double getJetBinUncertaintyWeight( ggF_qcdUncSource source, int Njets30, double Nsig=+1.0) {
 
     // Cross sections in the =0, =1, and >=2 jets of Powheg ggH after rewighting scaled to sigma (N3LO)
-    static vector<double> yieldUnc({  1.12,  0.66,  0.42 });
-    static vector<double>   resUnc({  0.03,  0.57,  0.42 });
-    static vector<double> cut01Unc({ -1.22,  1.00,  0.21 });
-    static vector<double> cut12Unc({  0.00, -0.86,  0.86 });
+    static std::vector<double> sig({ 30.26, 13.12, 5.14 });
+
+    static std::vector<double> yieldUnc({  1.12,  0.66,  0.42 });
+    static std::vector<double>   resUnc({  0.03,  0.57,  0.42 });
+    static std::vector<double> cut01Unc({ -1.22,  1.00,  0.21 });
+    static std::vector<double> cut12Unc({  0.00, -0.86,  0.86 });
 
     // account for missing EW + quark mass effects by scaling BLPTW total cross section to sigma (N3LO)
     double SF = 48.52/47.4;

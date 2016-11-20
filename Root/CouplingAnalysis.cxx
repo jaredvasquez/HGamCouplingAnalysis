@@ -116,7 +116,7 @@ EL::StatusCode CouplingAnalysis::execute()
     // Fix a bug in the STXS tool, remove this for new samples
     int   stxsNJ30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
     double stxsHPT = eventInfo()->auxdata<float>("HTXS_Higgs_pt");
-    stage1 = fixBins_stage1( stage1, stxsNJ30, stxsHPT );
+    stage1 = STXS::fixBins_stage1( stage1, stxsNJ30, stxsHPT );
   }
 
 
@@ -156,12 +156,12 @@ EL::StatusCode CouplingAnalysis::execute()
       TString histName = TString::Format("h_myy_cat%d", category);
       histoStore()->fillTH1F( histName, var::m_yy()*HG::invGeV, w );
 
-      int Njets30 = var::N_j_30.truth()
+      int Njets30 = var::N_j_30.truth();
 
-      double wQCDyield = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::yield, Njets30, +1.0)
-      double wQCDres   = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::res,   Njets30, +1.0)
-      double wQCDcut01 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut01, Njets30, +1.0)
-      double wQCDcut12 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut12, Njets30, +1.0)
+      double wQCDyield = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::yield, Njets30, +1.0);
+      double wQCDres   = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::res,   Njets30, +1.0);
+      double wQCDcut01 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut01, Njets30, +1.0);
+      double wQCDcut12 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut12, Njets30, +1.0);
 
       histoStore()->fillTH2F( "h2_catSTXS_QCDyield", category, STXSbin, wQCDyield );
       histoStore()->fillTH2F( "h2_catSTXS_QCDres",   category, STXSbin, wQCDres   );
