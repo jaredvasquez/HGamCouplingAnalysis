@@ -34,23 +34,45 @@ CouplingAnalysis::~CouplingAnalysis()
 
 EL::StatusCode CouplingAnalysis::createOutput()
 {
+  // Loop Over Systematics? 
+  m_useSystematics = config()->getBool("HGamCoupling.UseSystematics", false);
+
   // Only apply the reweighting to ggH MC
-  m_reweightHiggsPt = config()->getBool("STXS.ReweightHiggsPt", false);
+  m_reweightHiggsPt = config()->getBool("HGamCoupling.ReweightHiggsPt", false);
 
   if (isMC()) m_reweightHiggsPt &= getMCSampleName(eventInfo()->mcChannelNumber()).Contains("ggH125");
   else m_reweightHiggsPt = false;
 
   if (m_reweightHiggsPt) std::cout << "*** !!! REWEIGHTING HIGGS PT !!! ***" << std::endl;
+  else               std::cout << "*** !!! NOT REWEIGHTING HIGGS PT !!! ***" << std::endl;
 
   // Create Histograms
-  int nCats = 30;
-  histoStore()->createTH2F( "h2_catSTXS",  40, -0.5, 39.5, nCats, 0.5, nCats+0.5 );
-  //histoStore()->createTH2F( "h2_catSTXS_HComb", 53, -0.5, 52.5, 30, 0.5, 30.5 );
-  histoStore()->createTH1F( "h_truthAcc_weightMC", 40, -0.5, 39.5 );
-  histoStore()->createTH1F( "h_truthAcc_weight",   40, -0.5, 39.5 );
+  int nCats(30), nBins(40);
+
+  histoStore()->createTH1F( "h_truthAcc_weightMC", nBins, -0.5, nBins-0.5 );
+  histoStore()->createTH1F( "h_truthAcc_weight",   nBins, -0.5, nBins-0.5 );
+
+  TString suffix = ""; 
+  for (auto sys: getSystematics()) {
+    if (sys.name() != "") {
+      if (not m_useSystematics) break;
+      TString sysName = sys.name();
+      if (sysName.Contains("Trig")) continue;
+      if (sysName.Contains("_CorrUncertainty")) continue;
+      suffix = "_" + sys.name();
+      suffix.ReplaceAll(" ","_");
+    }
+
+    histoStore()->createTH2F( "h2_catSTXS"+suffix,  nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+  }
+    
+  histoStore()->createTH2F( "h2_catSTXS_QCDyield", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+  histoStore()->createTH2F( "h2_catSTXS_QCDres",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+  histoStore()->createTH2F( "h2_catSTXS_QCDcut01", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+  histoStore()->createTH2F( "h2_catSTXS_QCDcut12", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
 
   for ( int icat(1); icat < nCats; icat++ ) {
-    TString histName = TString::Format("h_cat%d_myy",icat);
+    TString histName = TString::Format("h_myy_cat%d",icat);
     histoStore()->createTH1F(histName, 55, 105, 160, ";m_{#gamma#gamma} [GeV];Events / GeV");
   }
 
@@ -61,24 +83,20 @@ EL::StatusCode CouplingAnalysis::createOutput()
 
 EL::StatusCode CouplingAnalysis::execute()
 {
-  // Here you do everything that needs to be done on every single
-  // events, e.g. read input variables, apply cuts, and fill
-  // histograms and trees.  This is where most of your actual analysis
-  // code will go.
-
-  // Important to keep this, so that internal tools / event variables
-  // are filled properly.
+  // Important to keep this, so that internal tools / event variables are filled properly.
   HgammaAnalysis::execute();
+
 
   // Blind the data
   if (isData() && var::m_yy() > 120*HG::GeV && var::m_yy() < 130*HG::GeV) return EL::StatusCode::SUCCESS;
+
   
   // Apply Higgs pT reweighting
   double w_pT = 1.0;
   if ( isMC() && m_reweightHiggsPt && (var::N_j.truth() < 2) ) {
     w_pT = HIGGS::ggF_01jet_hpT_weight( var::pT_h1.truth()*HG::invGeV );
   }
-
+  
   double wMC = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight();
   double w   = (isData()) ? 1.0 : w_pT * weight() * lumiXsecWeight();
 
@@ -102,20 +120,56 @@ EL::StatusCode CouplingAnalysis::execute()
     }
   }
 
-  int STXSbin = STXS::stage1_to_index( stage1 );
-  
+
   // Create Histograms for Truth Acceptances ( requires unskimmed samples )
+  int STXSbin = STXS::stage1_to_index( stage1 );
   histoStore()->fillTH1F( "h_truthAcc_weightMC", STXSbin, wMC );
   histoStore()->fillTH1F( "h_truthAcc_weight",   STXSbin, w   );
   
-  //int mcID = (isData()) ? 0 : eventInfo()->mcChannelNumber();
-  //bool isTWH = (341997 <= mcID && mcID <= 341999);
-  //int stage1_Hcomb = HTXSstage1_to_Hcomb( stage1, prodMode, isTWH );
-  //int hbin = HComb_to_index( stage1_Hcomb );
 
-  if (w == 0.) return EL::StatusCode::SUCCESS;
+  // Loop over systematic variations
+  TString suffix = "";
+  for (auto sys: getSystematics()) {
 
+    bool nominal = (sys.name() == "");
+    if (not nominal) {
+      //if (not m_useSystematics) break;
+      if (isData()) break;
+      TString sysName = sys.name();
+      if (sysName.Contains("Trig")) continue;
+      if (sysName.Contains("_CorrUncertainty")) continue;
+      suffix = "_" + sys.name();
+      suffix.ReplaceAll(" ","_");
+      applySystematicVariation(sys);
+    }
 
+    // Count events in each category
+    if (not var::isPassed()) return EL::StatusCode::SUCCESS;
+
+    w = (isData()) ? 1.0 : w_pT * weight() * lumiXsecWeight();
+    if (w == 0.) return EL::StatusCode::SUCCESS;
+
+    int category = var::catCoup_dev();
+    histoStore()->fillTH2F( "h2_catSTXS"+suffix, category, STXSbin, w );
+
+    if (nominal) {
+      TString histName = TString::Format("h_myy_cat%d", category);
+      histoStore()->fillTH1F( histName, var::m_yy()*HG::invGeV, w );
+
+      int Njets30 = var::N_j_30.truth()
+
+      double wQCDyield = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::yield, Njets30, +1.0)
+      double wQCDres   = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::res,   Njets30, +1.0)
+      double wQCDcut01 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut01, Njets30, +1.0)
+      double wQCDcut12 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut12, Njets30, +1.0)
+
+      histoStore()->fillTH2F( "h2_catSTXS_QCDyield", category, STXSbin, wQCDyield );
+      histoStore()->fillTH2F( "h2_catSTXS_QCDres",   category, STXSbin, wQCDres   );
+      histoStore()->fillTH2F( "h2_catSTXS_QCDcut01", category, STXSbin, wQCDcut01 );
+      histoStore()->fillTH2F( "h2_catSTXS_QCDcut12", category, STXSbin, wQCDcut12 );
+    }
+    
+  }
 
   return EL::StatusCode::SUCCESS;
 }

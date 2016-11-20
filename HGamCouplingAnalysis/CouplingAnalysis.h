@@ -7,16 +7,13 @@ class CouplingAnalysis : public HgammaAnalysis
   // put your configuration variables here as public variables.
   // that way they can be set directly from CINT and python.
 public:
-  // float cutValue;
-
-
 
   // variables that don't get filled at submission time should be
   // protected from being send from the submission node to the worker
   // node (done by the //!)
+
 private:
-  // Tree *myTree; //!
-  // TH1 *myHist; //!
+  bool m_useSystematics, m_reweightHiggsPt;
 
 
 
