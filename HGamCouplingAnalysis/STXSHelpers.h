@@ -25,14 +25,15 @@ namespace STXS {
   // ********************
   
 
-  int fixBins_stage1( int stage1, int NTruthJets=-1 ) {
+  int fixBins_stage1( int stage1, int NTruthJets=-1, double pTHiggs=-999. ) {
   // Helper function to correct issues in binning in versions before TruthRivetTools-00-00-07
   // ------------------------------------------------------------------------------------------
     if (stage1/100 >= 6) stage1--;
-    else if ((NTruthJets >= 0) && (stage1 == 101 || stage1 == 102)) {
+    else if ((pTHiggs > 200) && (stage1 == 101 || stage1 == 102)) {
       if (NTruthJets == 1) stage1 = 107;
       if (NTruthJets == 2) stage1 = 111;
     }
+
     return stage1;
   }
 

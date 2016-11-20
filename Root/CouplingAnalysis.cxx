@@ -56,9 +56,12 @@ EL::StatusCode CouplingAnalysis::createOutput()
   for (auto sys: getSystematics()) {
     if (sys.name() != "") {
       if (not m_useSystematics) break;
+      if (isData()) break;
+
       TString sysName = sys.name();
       if (sysName.Contains("Trig")) continue;
       if (sysName.Contains("_CorrUncertainty")) continue;
+
       suffix = "_" + sys.name();
       suffix.ReplaceAll(" ","_");
     }
@@ -110,14 +113,10 @@ EL::StatusCode CouplingAnalysis::execute()
     errorCode = eventInfo()->auxdata<int>("HTXS_errorCode");
     if (errorCode != 0) stage1 = -1;
 
-    // Fix a bug in the STXS tool
-    if (stage1 == 101 || stage1 == 102) {
-      if (eventInfo()->auxdata<float>("HTXS_Higgs_pt") > 200 ) {
-        int stxsNJ30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
-        if (stxsNJ30 == 1) stage1 = 107;
-        if (stxsNJ30 == 2) stage1 = 111;
-      }
-    }
+    // Fix a bug in the STXS tool, remove this for new samples
+    int   stxsNJ30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
+    double stxsHPT = eventInfo()->auxdata<float>("HTXS_Higgs_pt");
+    stage1 = fixBins_stage1( stage1, stxsNJ30, stxsHPT );
   }
 
 
@@ -133,17 +132,18 @@ EL::StatusCode CouplingAnalysis::execute()
 
     bool nominal = (sys.name() == "");
     if (not nominal) {
-      //if (not m_useSystematics) break;
+      if (not m_useSystematics) break;
       if (isData()) break;
+
       TString sysName = sys.name();
       if (sysName.Contains("Trig")) continue;
       if (sysName.Contains("_CorrUncertainty")) continue;
+
       suffix = "_" + sys.name();
       suffix.ReplaceAll(" ","_");
       applySystematicVariation(sys);
     }
 
-    // Count events in each category
     if (not var::isPassed()) return EL::StatusCode::SUCCESS;
 
     w = (isData()) ? 1.0 : w_pT * weight() * lumiXsecWeight();
