@@ -19,7 +19,7 @@ def decorateHist( hist, ztitle=None ):
   hist.GetYaxis().SetTitle("STXS Truth Bin")
   if (ztitle): hist.GetZaxis().SetTitle(ztitle)
   hist.GetXaxis().SetTitleOffset(4.0)
-  hist.GetYaxis().SetTitleOffset(4.0)
+  hist.GetYaxis().SetTitleOffset(4.5)
   hist.SetMinimum(0.0)
   hist.GetXaxis().SetRangeUser(  0.5, len(CatLabels)+0.5     )
   hist.GetYaxis().SetRangeUser( -0.5, len(Stage1_Labels)-0.5 )
@@ -40,7 +40,7 @@ def purityHistX( hist ):
     if (NX == 0.): continue
     for jbin in xrange( 1, hist.GetNbinsY() ):
       hPurity.SetBinContent( ibin, jbin, hPurity.GetBinContent( ibin, jbin )/float(NX) )
-  return decorateHist( hPurity, "Purity" )
+  return decorateHist( hPurity, "Truth Purity / Reco Category" )
 
 
 histName = "h2_catSTXS"
@@ -50,10 +50,12 @@ hsum = sumHist( histName, tfs )
 hpur = purityHistX( hsum )
 
 can = TCanvas(); can.cd()
-can.SetTopMargin(0.05)
-can.SetRightMargin(0.12)
-can.SetLeftMargin(0.25)
+can.SetTopMargin(0.02)
+can.SetRightMargin(0.13)
+can.SetLeftMargin(0.28)
 can.SetBottomMargin(0.25)
 
 hpur.Draw("colz")
-raw_input("Done?")
+
+can.SaveAs("plots/purity.pdf")
+can.SaveAs("plots/purity.png")
