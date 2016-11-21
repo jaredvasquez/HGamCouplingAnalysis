@@ -47,7 +47,7 @@ EL::StatusCode CouplingAnalysis::createOutput()
   else               std::cout << "*** !!! NOT REWEIGHTING HIGGS PT !!! ***" << std::endl;
 
   // Create Histograms
-  int nCats(30), nBins(40);
+  int nCats(40), nBins(40);
 
   histoStore()->createTH1F( "h_truthAcc_weightMC", nBins, -0.5, nBins-0.5 );
   histoStore()->createTH1F( "h_truthAcc_weight",   nBins, -0.5, nBins-0.5 );
@@ -100,7 +100,7 @@ EL::StatusCode CouplingAnalysis::execute()
   }
   
   double wMC = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight();
-  double w   = (isData()) ? 1.0 : w_pT * weight() * lumiXsecWeight();
+  double w   = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
 
   
   // Save Histogram for Truth Acceptance
@@ -146,10 +146,10 @@ EL::StatusCode CouplingAnalysis::execute()
 
     if (not var::isPassed()) return EL::StatusCode::SUCCESS;
 
-    w = (isData()) ? 1.0 : w_pT * weight() * lumiXsecWeight();
+    w = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
     if (w == 0.) return EL::StatusCode::SUCCESS;
 
-    int category = var::catCoup_dev();
+    int category = var::catCoup_Moriond2017();
     histoStore()->fillTH2F( "h2_catSTXS"+suffix, category, STXSbin, w );
 
     if (nominal) {
