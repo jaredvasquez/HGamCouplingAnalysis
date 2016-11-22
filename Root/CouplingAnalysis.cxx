@@ -95,7 +95,7 @@ EL::StatusCode CouplingAnalysis::execute()
   
   // Apply Higgs pT reweighting
   double w_pT = 1.0;
-  if ( isMC() && m_reweightHiggsPt && (var::N_j.truth() < 2) ) {
+  if ( isMC() && m_reweightHiggsPt && (eventInfo()->auxdata<int>("HTXS_Njets_pTjet30") < 2) ) {
     w_pT = HIGGS::ggF_01jet_hpT_weight( var::pT_h1.truth()*HG::invGeV );
   }
   
@@ -156,7 +156,8 @@ EL::StatusCode CouplingAnalysis::execute()
       TString histName = TString::Format("h_myy_cat%d", category);
       histoStore()->fillTH1F( histName, var::m_yy()*HG::invGeV, w );
 
-      int Njets30 = var::N_j_30.truth();
+      //int Njets30 = var::N_j_30.truth();
+      int Njets30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
 
       double wQCDyield = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::yield, Njets30, +1.0);
       double wQCDres   = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::res,   Njets30, +1.0);
