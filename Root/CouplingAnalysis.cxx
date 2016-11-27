@@ -40,8 +40,11 @@ EL::StatusCode CouplingAnalysis::createOutput()
   // Only apply the reweighting to ggH MC
   m_reweightHiggsPt = config()->getBool("HGamCoupling.ReweightHiggsPt", false);
 
-  if (isMC()) m_reweightHiggsPt &= getMCSampleName(eventInfo()->mcChannelNumber()).Contains("ggH125");
-  else m_reweightHiggsPt = false;
+  m_isGGH = false;
+  if (isMC()) {
+    m_isGGH = getMCSampleName(eventInfo()->mcChannelNumber()).Contains("ggH125");
+    m_reweightHiggsPt &= m_isGGH;
+  } else m_reweightHiggsPt = false;
 
   if (m_reweightHiggsPt) std::cout << "*** !!! REWEIGHTING HIGGS PT !!! ***" << std::endl;
   else               std::cout << "*** !!! NOT REWEIGHTING HIGGS PT !!! ***" << std::endl;
@@ -52,6 +55,30 @@ EL::StatusCode CouplingAnalysis::createOutput()
   histoStore()->createTH1F( "h_truthAcc_weightMC", nBins, -0.5, nBins-0.5 );
   histoStore()->createTH1F( "h_truthAcc_weight",   nBins, -0.5, nBins-0.5 );
 
+
+  HG::SystematicList systList = getSystematics();
+  int Nsysts = systList.size()-1;
+  if (Nsysts > 0) std::cout << "Running over " << Nsysts << " systematics:" << std::endl;
+  if (Nsysts > 0) std::cout << "The last systematic is " << systList[120].name() << std::endl;
+  if (Nsysts > 0) {
+    for (int i(0); i <= Nsysts; i++ )
+      std::cout << "\t" << i << " " << systList[i].name() << std::endl;
+  }
+  std::cout << std::endl;
+
+  /*
+  static int sysIndex = config()->getInt("HGamCoupling.SystematicIndex", -1);
+  if (sysIndex > Nsysts) 
+    std::cout << "Canceling job for syst index " << sysIndex 
+              << ", there are only " << Nsysts << " variations." << std::endl;
+
+  HG::SystematicList useSyst;
+  if (sysIndex < 0) useSyst = systList;
+  else useSyst.insert( systList[sysIndex] );
+  */
+
+  if (Nsysts > 0) std::cout << "Running over " << Nsysts << " systematics:" << std::endl;
+
   TString suffix = ""; 
   for (auto sys: getSystematics()) {
     if (sys.name() != "") {
@@ -61,11 +88,14 @@ EL::StatusCode CouplingAnalysis::createOutput()
       TString sysName = sys.name();
       if (sysName.Contains("Trig")) continue;
       if (sysName.Contains("_CorrUncertainty")) continue;
+      
+      if (Nsysts > 0) std::cout << "\t" << sysName << std::endl;
 
       suffix = "_" + sys.name();
       suffix.ReplaceAll(" ","_");
     }
 
+    histoStore()->createTH1F(  "h_catSTXS"+suffix,  nCats, 0.5, nCats+0.5 );
     histoStore()->createTH2F( "h2_catSTXS"+suffix,  nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
   }
     
@@ -150,24 +180,27 @@ EL::StatusCode CouplingAnalysis::execute()
     if (w == 0.) return EL::StatusCode::SUCCESS;
 
     int category = var::catCoup_Moriond2017();
+    histoStore()->fillTH1F(  "h_catSTXS"+suffix, category, w );
     histoStore()->fillTH2F( "h2_catSTXS"+suffix, category, STXSbin, w );
 
     if (nominal) {
       TString histName = TString::Format("h_myy_cat%d", category);
       histoStore()->fillTH1F( histName, var::m_yy()*HG::invGeV, w );
 
-      //int Njets30 = var::N_j_30.truth();
-      int Njets30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
+      if (m_isGGH) {
+        int Njets30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
+        //int Njets30 = var::N_j_30.truth();
+        
+        double wQCDyield = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::yield, Njets30, +1.0);
+        double wQCDres   = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::res,   Njets30, +1.0);
+        double wQCDcut01 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut01, Njets30, +1.0);
+        double wQCDcut12 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut12, Njets30, +1.0);
 
-      double wQCDyield = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::yield, Njets30, +1.0);
-      double wQCDres   = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::res,   Njets30, +1.0);
-      double wQCDcut01 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut01, Njets30, +1.0);
-      double wQCDcut12 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut12, Njets30, +1.0);
-
-      histoStore()->fillTH2F( "h2_catSTXS_QCDyield", category, STXSbin, wQCDyield );
-      histoStore()->fillTH2F( "h2_catSTXS_QCDres",   category, STXSbin, wQCDres   );
-      histoStore()->fillTH2F( "h2_catSTXS_QCDcut01", category, STXSbin, wQCDcut01 );
-      histoStore()->fillTH2F( "h2_catSTXS_QCDcut12", category, STXSbin, wQCDcut12 );
+        histoStore()->fillTH2F( "h2_catSTXS_QCDyield", category, STXSbin, wQCDyield );
+        histoStore()->fillTH2F( "h2_catSTXS_QCDres",   category, STXSbin, wQCDres   );
+        histoStore()->fillTH2F( "h2_catSTXS_QCDcut01", category, STXSbin, wQCDcut01 );
+        histoStore()->fillTH2F( "h2_catSTXS_QCDcut12", category, STXSbin, wQCDcut12 );
+      }
     }
     
   }

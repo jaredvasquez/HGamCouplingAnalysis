@@ -14,7 +14,7 @@ public:
   // node (done by the //!)
 
 private:
-  bool m_useSystematics, m_reweightHiggsPt;
+  bool m_useSystematics, m_reweightHiggsPt, m_isGGH;
 
 
 
