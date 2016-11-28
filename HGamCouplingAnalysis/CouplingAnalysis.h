@@ -15,8 +15,7 @@ public:
 
 private:
   bool m_useSystematics, m_reweightHiggsPt, m_isGGH;
-
-
+  HG::SystematicList sysList;
 
 public:
   // this is a standard constructor

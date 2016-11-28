@@ -56,38 +56,34 @@ EL::StatusCode CouplingAnalysis::createOutput()
   histoStore()->createTH1F( "h_truthAcc_weight",   nBins, -0.5, nBins-0.5 );
 
 
-  HG::SystematicList systList = getSystematics();
-  int Nsysts = systList.size()-1;
+  HG::SystematicList allSys = getSystematics();
+  int Nsysts = allSys.size()-1;
   if (Nsysts > 0) std::cout << "Running over " << Nsysts << " systematics:" << std::endl;
-  if (Nsysts > 0) std::cout << "The last systematic is " << systList[120].name() << std::endl;
   if (Nsysts > 0) {
     for (int i(0); i <= Nsysts; i++ )
-      std::cout << "\t" << i << " " << systList[i].name() << std::endl;
+      std::cout << "\t" << i << " " << allSys[i].name() << std::endl;
   }
   std::cout << std::endl;
 
-  /*
   static int sysIndex = config()->getInt("HGamCoupling.SystematicIndex", -1);
   if (sysIndex > Nsysts) 
     std::cout << "Canceling job for syst index " << sysIndex 
               << ", there are only " << Nsysts << " variations." << std::endl;
 
-  HG::SystematicList useSyst;
-  if (sysIndex < 0) useSyst = systList;
-  else useSyst.insert( systList[sysIndex] );
-  */
+  if (sysIndex < 0) sysList = allSys;
+  else sysList.push_back( allSys[sysIndex] );
 
   if (Nsysts > 0) std::cout << "Running over " << Nsysts << " systematics:" << std::endl;
 
   TString suffix = ""; 
-  for (auto sys: getSystematics()) {
+  for (auto sys: sysList) {
     if (sys.name() != "") {
       if (not m_useSystematics) break;
       if (isData()) break;
 
       TString sysName = sys.name();
-      if (sysName.Contains("Trig")) continue;
-      if (sysName.Contains("_CorrUncertainty")) continue;
+      //if (sysName.Contains("Trig")) continue;
+      //if (sysName.Contains("_CorrUncertainty")) continue;
       
       if (Nsysts > 0) std::cout << "\t" << sysName << std::endl;
 
@@ -158,7 +154,7 @@ EL::StatusCode CouplingAnalysis::execute()
 
   // Loop over systematic variations
   TString suffix = "";
-  for (auto sys: getSystematics()) {
+  for (auto sys: sysList) {
 
     bool nominal = (sys.name() == "");
     if (not nominal) {
@@ -166,8 +162,8 @@ EL::StatusCode CouplingAnalysis::execute()
       if (isData()) break;
 
       TString sysName = sys.name();
-      if (sysName.Contains("Trig")) continue;
-      if (sysName.Contains("_CorrUncertainty")) continue;
+      //if (sysName.Contains("Trig")) continue;
+      //if (sysName.Contains("_CorrUncertainty")) continue;
 
       suffix = "_" + sys.name();
       suffix.ReplaceAll(" ","_");
