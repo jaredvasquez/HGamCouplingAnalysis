@@ -92,7 +92,8 @@ EL::StatusCode CouplingAnalysis::createOutput()
     }
 
     histoStore()->createTH1F(  "h_catSTXS"+suffix,  nCats, 0.5, nCats+0.5 );
-    histoStore()->createTH2F( "h2_catSTXS"+suffix,  nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+    histoStore()->createTH2F( "h2_catSTXS"+suffix,  nCats, 1, nCats+1, nBins, 0, nBins );
+    //histoStore()->createTH2F( "h2_catSTXS"+suffix,  nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
   }
     
   histoStore()->createTH2F( "h2_catSTXS_QCDyield", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
