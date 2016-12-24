@@ -27,8 +27,8 @@ CatLabels = [
     "ttHhad_6j1b",
     "ttHhad_5j2b",
     "ttHhad_5j1b",
-    "ttHhad_4j2b",
-    "ttHhad_4j1b",
+    "tHhad_4j2b",
+    "tHhad_4j1b",
     "ttHlep",
     "tHlep_1fwd",
     "tHlep_0fwd"

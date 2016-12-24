@@ -5,9 +5,7 @@ import HGamMoriondCats as HG
 gStyle.SetOptStat(0)
 prettyplots.setPalette("rainbow")
 
-Stage1_Labels = ["UNKNOWN","GG2H_FWDH","GG2H_VBFTOPO_JET3VETO","GG2H_VBFTOPO_JET3","GG2H_0J","GG2H_1J_PTH_0_60","GG2H_1J_PTH_60_120","GG2H_1J_PTH_120_200","GG2H_1J_PTH_GT200","GG2H_GE2J_PTH_0_60","GG2H_GE2J_PTH_60_120","GG2H_GE2J_PTH_120_200","GG2H_GE2J_PTH_GT200","VBF_QQ2HQQ_FWDH","QQ2HQQ_VBFTOPO_JET3VETO","QQ2HQQ_VBFTOPO_JET3","QQ2HQQ_VH2JET","QQ2HQQ_REST","QQ2HQQ_PTJET1_GT200","QQ2HLNU_FWDH","QQ2HLNU_PTV_0_150","QQ2HLNU_PTV_150_250_0J","QQ2HLNU_PTV_150_250_GE1J","QQ2HLNU_PTV_GT250","QQ2HLL_FWDH","QQ2HLL_PTV_0_150","QQ2HLL_PTV_150_250_0J","QQ2HLL_PTV_150_250_GE1J","QQ2HLL_PTV_GT250","GG2HLL_FWDH","GG2HLL_PTV_0_150","GG2HLL_PTV_GT150_0J","GG2HLL_PTV_GT150_GE1J","TTH_FWDH","TTH","BBH_FWDH","BBH","TH_FWDH","TH"]
-
-HCombStage1_Labels = ["UNKNOWN","GG2H_FWDH","GG2H_VBFTOPO_JET3VETO","GG2H_VBFTOPO_JET3","GG2H_0J","GG2H_1J_PTH_0_60","GG2H_1J_PTH_60_120","GG2H_1J_PTH_120_200","GG2H_1J_PTH_GT200","GG2H_GE2J_PTH_0_60","GG2H_GE2J_PTH_60_120","GG2H_GE2J_PTH_120_200","GG2H_GE2J_PTH_GT200","VBF_QQ2HQQ_FWDH","VBF_QQ2HQQ_VBFTOPO_JET3VETO","VBF_QQ2HQQ_VBFTOPO_JET3","VBF_QQ2HQQ_VH2JET","VBF_QQ2HQQ_REST","VBF_QQ2HQQ_PTJET1_GT200","WH_QQ2HQQ_FWDH","WH_QQ2HQQ_VBFTOPO_JET3VETO","WH_QQ2HQQ_VBFTOPO_JET3","WH_QQ2HQQ_VH2JET","WH_QQ2HQQ_REST","WH_QQ2HQQ_PTJET1_GT200","ZH_QQ2HQQ_FWDH","ZH_QQ2HQQ_VBFTOPO_JET3VETO","ZH_QQ2HQQ_VBFTOPO_JET3","ZH_QQ2HQQ_VH2JET","ZH_QQ2HQQ_REST","ZH_QQ2HQQ_PTJET1_GT200","QQ2HLNU_FWDH","QQ2HLNU_PTV_0_150","QQ2HLNU_PTV_150_250_0J","QQ2HLNU_PTV_150_250_GE1J","QQ2HLNU_PTV_GT250","QQ2HLL_FWDH","QQ2HLL_PTV_0_150","QQ2HLL_PTV_150_250_0J","QQ2HLL_PTV_150_250_GE1J","QQ2HLL_PTV_GT250","GG2HLL_FWDH","GG2HLL_PTV_0_150","GG2HLL_PTV_GT150_0J","GG2HLL_PTV_GT150_GE1J","TTH_FWDH","TTH","BBH_FWDH","BBH","THQB_FWDH","THQB","TWH_FWDH","TWH"]
+Stage1_Labels = ["UNKNOWN","GG2H_FWDH","GG2H_VBFTOPO_JET3VETO","GG2H_VBFTOPO_JET3","GG2H_0J","GG2H_1J_PTH_0_60","GG2H_1J_PTH_60_120","GG2H_1J_PTH_120_200","GG2H_1J_PTH_GT200","GG2H_GE2J_PTH_0_60","GG2H_GE2J_PTH_60_120","GG2H_GE2J_PTH_120_200","GG2H_GE2J_PTH_GT200","VBF_QQ2HQQ_FWDH","QQ2HQQ_VBFTOPO_JET3VETO","QQ2HQQ_VBFTOPO_JET3","QQ2HQQ_VH2JET","QQ2HQQ_REST","QQ2HQQ_PTJET1_GT200","QQ2HLNU_FWDH","QQ2HLNU_PTV_0_150","QQ2HLNU_PTV_150_250_0J","QQ2HLNU_PTV_150_250_GE1J","QQ2HLNU_PTV_GT250","QQ2HLL_FWDH","QQ2HLL_PTV_0_150","QQ2HLL_PTV_150_250_0J","QQ2HLL_PTV_150_250_GE1J","QQ2HLL_PTV_GT250","GG2HLL_FWDH","GG2HLL_PTV_0_150","GG2HLL_PTV_GT150_0J","GG2HLL_PTV_GT150_GE1J","TTH_FWDH","TTH","BBH_FWDH","BBH","THJB_FWDH","THJB","TWH_FWDH","TWH"]
 
 CatLabels = HG.CatLabels
 
@@ -19,7 +17,7 @@ def decorateHist( hist, ztitle=None ):
   hist.GetXaxis().SetTitle("Reco Category")
   hist.GetYaxis().SetTitle("STXS Truth Bin")
   if (ztitle): hist.GetZaxis().SetTitle(ztitle)
-  hist.GetXaxis().SetTitleOffset(4.0)
+  hist.GetXaxis().SetTitleOffset(3.0)
   hist.GetYaxis().SetTitleOffset(4.5)
   hist.SetMinimum(0.0)
   hist.GetXaxis().SetRangeUser( 1, len(CatLabels)+1 )
@@ -90,14 +88,38 @@ def rebinHist( origHist, useBins, binsMap ):
 hpur = rebinHist( hpur, binsKeep, binsMap )
 
 can = TCanvas(); can.cd()
-can.SetTopMargin(0.02)
+#can.SetTopMargin(0.02)
+#can.SetBottomMargin(0.25)
+can.SetTopMargin(0.08)
 can.SetRightMargin(0.13)
 can.SetLeftMargin(0.28)
-can.SetBottomMargin(0.25)
+can.SetBottomMargin(0.20)
 can.SetGrid()
-gStyle.SetGridColor(kGray+1)
+
+gridColor = kGray+1
+gStyle.SetGridColor(gridColor)
+hpur.GetXaxis().SetAxisColor(gridColor)
+hpur.GetYaxis().SetAxisColor(gridColor)
 hpur.Draw("colz")
 hpur.Draw("AXIS SAME")
+
+paves = {}
+paves['ggH'] = TPave(  1,  0, 11,  9)
+paves['qqH'] = TPave( 11,  9, 18, 16)
+paves[ 'VH'] = TPave( 18, 16, 25, 24)
+paves['ttH'] = TPave( 25, 24, 34, 27)
+for group in paves:
+  pave = paves[group]
+  pave.SetBorderSize(1)
+  pave.SetFillStyle(0)
+  pave.SetLineWidth(3)
+  pave.Draw()
+
+tl = TLatex()
+tl.SetNDC()
+tl.DrawLatex(0.3, 0.95, "#bf{#it{#bf{ATLAS}} Internal}")
+tl.SetTextSize(0.04)
+tl.DrawLatex(0.55, 0.95, "#bf{#it{H #rightarrow #gamma#gamma, m_{H} = 125.09} GeV}")
 
 can.SaveAs("plots/purity.pdf")
 can.SaveAs("plots/purity.png")
