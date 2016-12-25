@@ -141,10 +141,10 @@ EL::StatusCode CouplingAnalysis::execute()
     if (errorCode != 0) stage1 = -1;
 
     // Fix a bug in the STXS tool, remove this for new samples
-    int   stxsNJ30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
-    double stxsHPT = var::pT_h1.truth()*HG::invGeV; 
+    //int   stxsNJ30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
+    //double stxsHPT = var::pT_h1.truth()*HG::invGeV; 
     //double stxsHPT = eventInfo()->auxdata<float>("HTXS_Higgs_pt")*HG::invGeV;
-    stage1 = STXS::fixBins_stage1( stage1, stxsNJ30, stxsHPT );
+    //stage1 = STXS::fixBins_stage1( stage1, stxsNJ30, stxsHPT );
   }
 
 
