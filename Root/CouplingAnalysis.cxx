@@ -45,19 +45,20 @@ EL::StatusCode CouplingAnalysis::createOutput()
     m_isGGH = getMCSampleName(eventInfo()->mcChannelNumber()).Contains("ggH125");
     m_reweightHiggsPt &= m_isGGH;
   } else m_reweightHiggsPt = false;
+    
+  m_isTWH = getMCSampleName(eventInfo()->mcChannelNumber()).Contains("tWH125");
 
   if (m_reweightHiggsPt) std::cout << "*** !!! REWEIGHTING HIGGS PT !!! ***" << std::endl;
   else               std::cout << "*** !!! NOT REWEIGHTING HIGGS PT !!! ***" << std::endl;
 
   // Create Histograms
-  int nCats(40), nBins(40);
+  int nCats(33), nBins(42);
 
   histoStore()->createTH1F( "h_truthAcc_weightMC", nBins, -0.5, nBins-0.5 );
   histoStore()->createTH1F( "h_truthAcc_weight",   nBins, -0.5, nBins-0.5 );
 
-
   HG::SystematicList allSys = getSystematics();
-  int Nsysts = allSys.size()-1;
+  int Nsysts = (isData()) ? 0 : allSys.size()-1;
   if (Nsysts > 0) std::cout << "Running over " << Nsysts << " systematics:" << std::endl;
   if (Nsysts > 0) {
     for (int i(0); i <= Nsysts; i++ )
@@ -101,7 +102,7 @@ EL::StatusCode CouplingAnalysis::createOutput()
   histoStore()->createTH2F( "h2_catSTXS_QCDcut01", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
   histoStore()->createTH2F( "h2_catSTXS_QCDcut12", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
 
-  for ( int icat(1); icat < nCats; icat++ ) {
+  for ( int icat(1); icat < nCats+1; icat++ ) {
     TString histName = TString::Format("h_myy_cat%d",icat);
     histoStore()->createTH1F(histName, 55, 105, 160, ";m_{#gamma#gamma} [GeV];Events / GeV");
   }
@@ -149,6 +150,8 @@ EL::StatusCode CouplingAnalysis::execute()
 
   // Create Histograms for Truth Acceptances ( requires unskimmed samples )
   int STXSbin = STXS::stage1_to_index( stage1 );
+  if (m_isTWH) STXSbin += 2;
+
   histoStore()->fillTH1F( "h_truthAcc_weightMC", STXSbin, wMC );
   histoStore()->fillTH1F( "h_truthAcc_weight",   STXSbin, w   );
   
