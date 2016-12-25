@@ -88,7 +88,7 @@ tl = TLatex()
 tl.SetNDC()
 tl.DrawLatex(0.22, 0.95, "#bf{#it{#bf{ATLAS}} Internal}")
 tl.SetTextSize(0.032)
-tl.DrawLatex(0.55, 0.95, "#bf{#it{H #rightarrow #gamma#gamma,  m_{H} = 125.09} GeV}")
+tl.DrawLatex(0.57, 0.95, "#bf{#it{H #rightarrow #gamma#gamma,  m_{H} = 125.09} GeV}")
 
 gPad.RedrawAxis()
 gPad.SetTicks(1,1)

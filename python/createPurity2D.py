@@ -22,8 +22,6 @@ def decorateHist( hist, ztitle=None ):
   hist.SetMinimum(0.0)
   hist.GetXaxis().SetRangeUser( 1, len(CatLabels)+1 )
   hist.GetYaxis().SetRangeUser( 0., len(Stage1_Labels) )
-  #hist.GetXaxis().SetRangeUser(  0.5, len(CatLabels)+0.5     )
-  #hist.GetYaxis().SetRangeUser( -0.5, len(Stage1_Labels)-0.5 )
   return hist
 
 def sumHist( histName, tfs ):
@@ -34,12 +32,12 @@ def sumHist( histName, tfs ):
 
 def purityHistX( hist ):
   hPurity = hist.Clone()
-  for ibin in xrange( 1, hist.GetNbinsX() ):
+  for ibin in xrange( 1, hist.GetNbinsX()+1 ):
     NX = 0.0
-    for jbin in xrange( 1, hist.GetNbinsY() ):
+    for jbin in xrange( 1, hist.GetNbinsY()+1 ):
       NX += hPurity.GetBinContent( ibin, jbin )
     if (NX == 0.): continue
-    for jbin in xrange( 1, hist.GetNbinsY() ):
+    for jbin in xrange( 1, hist.GetNbinsY()+1 ):
       hPurity.SetBinContent( ibin, jbin, hPurity.GetBinContent( ibin, jbin )/float(NX) )
   return decorateHist( hPurity, "Truth Purity / Reco Category" )
 
@@ -57,12 +55,10 @@ def removeBin( binName ):
     if (key in binName): return False
   return True
 
-binsKeep = filter( removeBin, Stage1_Labels ) + ['BBH']
+binsKeep = filter( removeBin, Stage1_Labels ) #+ ['BBH']
 binsMap = { x : i for i, x in enumerate(Stage1_Labels,1) }
 binsKeep.insert( 10, binsKeep.pop(0) )
 binsKeep.insert( 10, binsKeep.pop(0) )
-#for x in binsKeep: print x
-#import sys; sys.exit()
 
 def rebinHist( origHist, useBins, binsMap ):
   # Reset histogram
