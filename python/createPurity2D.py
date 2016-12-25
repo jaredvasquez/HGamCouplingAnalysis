@@ -121,5 +121,5 @@ tl.DrawLatex(0.3, 0.95, "#bf{#it{#bf{ATLAS}} Internal}")
 tl.SetTextSize(0.04)
 tl.DrawLatex(0.55, 0.95, "#bf{#it{H #rightarrow #gamma#gamma, m_{H} = 125.09} GeV}")
 
-can.SaveAs("plots/purity.pdf")
-can.SaveAs("plots/purity.png")
+can.SaveAs("plots/purity2d.pdf")
+can.SaveAs("plots/purity2d.png")
