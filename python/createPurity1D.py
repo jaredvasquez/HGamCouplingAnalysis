@@ -65,8 +65,8 @@ for i, h in enumerate(hs):
   h.SetFillColor(color[procs[i]])
   hstack.Add(h)
 
-can = TCanvas('can','can',800,1600); can.cd()
-can.SetTopMargin(0.08)
+can = TCanvas('can','can',600,1600); can.cd()
+can.SetTopMargin(0.12)
 can.SetRightMargin(0.02)
 can.SetLeftMargin(0.20)
 can.SetBottomMargin(0.08)
@@ -86,9 +86,9 @@ for i in xrange(len(HG.CatLabels)):
 
 tl = TLatex()
 tl.SetNDC()
-tl.DrawLatex(0.22, 0.95, "#bf{#it{#bf{ATLAS}} Internal}")
+tl.DrawLatex(0.22, 0.90, "#bf{#it{#bf{ATLAS}} Internal}")
 tl.SetTextSize(0.032)
-tl.DrawLatex(0.57, 0.95, "#bf{#it{H #rightarrow #gamma#gamma,  m_{H} = 125.09} GeV}")
+tl.DrawLatex(0.57, 0.90, "#bf{#it{H #rightarrow #gamma#gamma,  m_{H} = 125.09} GeV}")
 
 gPad.RedrawAxis()
 gPad.SetTicks(1,1)

@@ -83,6 +83,8 @@ def rebinHist( origHist, useBins, binsMap ):
 
 hpur = rebinHist( hpur, binsKeep, binsMap )
 
+#scaleCan = 1.5
+#can = TCanvas('can','can',int(800*scaleCan),int(600*scaleCan)); can.cd()
 can = TCanvas(); can.cd()
 #can.SetTopMargin(0.02)
 #can.SetBottomMargin(0.25)

@@ -1,13 +1,12 @@
-import os
+import os, sys
 from sysTools import *
-from sys import exit
 from ROOT import *
 import HGamMoriondCats as HG
 
 # Parameters
 _NSYS = 120
-procs = ["HHDMmr260mx60br90_DMgamgam"]
-strPATH = "output/SystTetst_%s/hist-%s.root"
+procs = ["WH"]
+strPATH = 'output/SystCoupling/SystCoupling_%s/hist-%s.root'
 
 
 # List all Categories
@@ -20,6 +19,7 @@ if (listCats):
 
 
 # Get Systematics Variations for each process
+missingFiles = False
 allSys = {}
 for proc in procs:
   tfs = []
@@ -28,8 +28,10 @@ for proc in procs:
     filePATH = strPATH % (sampName,sampName)
     if not os.path.isfile(filePATH):
       print "ERROR: Could not find", sampName
-      sys.exit()
+      missingFiles = True
+      continue
     tfs.append( TFile(filePATH) )
+  if missingFiles: sys.exit()
   allSys[proc] = getVariation(tfs)
 
 
@@ -39,6 +41,7 @@ allSysByCat = { cat: { proc: allSys[proc][cat] for proc in procs } for cat in HG
 
 # Print results
 for cat in HG.CatLabels:
+  break
   print "\n",cat
   for proc in allSysByCat[cat]:
     print " ", proc
