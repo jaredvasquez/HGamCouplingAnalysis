@@ -41,12 +41,13 @@ EL::StatusCode CouplingAnalysis::createOutput()
   m_reweightHiggsPt = config()->getBool("HGamCoupling.ReweightHiggsPt", false);
 
   m_isGGH = false;
+  m_isTWH = false;
   if (isMC()) {
     m_isGGH = getMCSampleName(eventInfo()->mcChannelNumber()).Contains("ggH125");
+    m_isTWH = getMCSampleName(eventInfo()->mcChannelNumber()).Contains("tWH125");
     m_reweightHiggsPt &= m_isGGH;
   } else m_reweightHiggsPt = false;
     
-  m_isTWH = getMCSampleName(eventInfo()->mcChannelNumber()).Contains("tWH125");
 
   if (m_reweightHiggsPt) std::cout << "*** !!! REWEIGHTING HIGGS PT !!! ***" << std::endl;
   else               std::cout << "*** !!! NOT REWEIGHTING HIGGS PT !!! ***" << std::endl;
