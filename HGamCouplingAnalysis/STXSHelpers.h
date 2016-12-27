@@ -44,6 +44,7 @@ namespace STXS {
     int P = (int)(stage1 / 100);
     int F = (int)(stage1 % 100);
     static std::vector<int> offset({0,1,13,19,24,29,33,35,37,39});
+    if (stage1 < 0) return -1;
     return ( F + offset[P] );
   }
 

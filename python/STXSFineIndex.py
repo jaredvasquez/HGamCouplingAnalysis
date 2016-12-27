@@ -1,5 +1,5 @@
 FineIndexLabels = [
-  "Unkown",
+  "Unknown",
   "gg2H_fwdH",
   "gg2H_VBFtopo_jet3veto",
   "gg2H_VBFtopo_jet3",

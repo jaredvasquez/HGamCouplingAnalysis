@@ -1,6 +1,7 @@
 from ROOT import *
 from math import sqrt
-from STXSFineIndex import FineIndexLabels
+
+binNames = ["UNKNOWN","GG2H_FWDH","GG2H_VBFTOPO_JET3VETO","GG2H_VBFTOPO_JET3","GG2H_0J","GG2H_1J_PTH_0_60","GG2H_1J_PTH_60_120","GG2H_1J_PTH_120_200","GG2H_1J_PTH_GT200","GG2H_GE2J_PTH_0_60","GG2H_GE2J_PTH_60_120","GG2H_GE2J_PTH_120_200","GG2H_GE2J_PTH_GT200","VBF_QQ2HQQ_FWDH","QQ2HQQ_VBFTOPO_JET3VETO","QQ2HQQ_VBFTOPO_JET3","QQ2HQQ_VH2JET","QQ2HQQ_REST","QQ2HQQ_PTJET1_GT200","QQ2HLNU_FWDH","QQ2HLNU_PTV_0_150","QQ2HLNU_PTV_150_250_0J","QQ2HLNU_PTV_150_250_GE1J","QQ2HLNU_PTV_GT250","QQ2HLL_FWDH","QQ2HLL_PTV_0_150","QQ2HLL_PTV_150_250_0J","QQ2HLL_PTV_150_250_GE1J","QQ2HLL_PTV_GT250","GG2HLL_FWDH","GG2HLL_PTV_0_150","GG2HLL_PTV_GT150_0J","GG2HLL_PTV_GT150_GE1J","TTH_FWDH","TTH","BBH_FWDH","BBH","THJB_FWDH","THJB","TWH_FWDH","TWH"]
 
 procName = {
    'ggH' : 'ggH (Powheg + Pythia8), with pTH rweighting',
@@ -14,8 +15,8 @@ procName = {
 }
 
 procs=['ggH','VBF','WH','ZH','ttH','bbH','tWH','tHjb']
-procs=['ggH','VBF','WH','ZH','ttH','bbH']
-histName = 'h_truthAcc_fineIndex_weightMC'
+procs=['tWH','tHjb']
+histName = 'h_truthAcc_weightMC'
 
 def getSumHist( h ):
   Ntot, Nerr = 0., 0.
@@ -37,7 +38,7 @@ def getSumHist( h ):
 for proc in procs:
   tf = TFile( 'output/Coupling_%s/hist-%s.root' % (proc,proc) )
   hbin = tf.Get(histName)
-  for ibin, binName in enumerate( FineIndexLabels ):
+  for ibin, binName in enumerate( binNames ):
     hbin.GetXaxis().SetBinLabel( ibin+1, binName )
     #print ibin, binName
 
@@ -46,7 +47,7 @@ for proc in procs:
 
   print '\n  %s' % procName[proc]
   print '-'*60
-  for ibin, binName in enumerate( FineIndexLabels ):
+  for ibin, binName in enumerate( binNames ):
     if (ibin < 1): continue
     acc = hbin.GetBinContent( ibin+1 )
     err = hbin.GetBinError( ibin+1 )

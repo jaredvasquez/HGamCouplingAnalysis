@@ -146,7 +146,7 @@ EL::StatusCode CouplingAnalysis::execute()
   
   // Apply Higgs pT reweighting
   double w_pT = 1.0;
-  if ( isMC() && m_reweightHiggsPt && (eventInfo()->auxdata<int>("HTXS_Njets_pTjet30") < 2) ) {
+  if ( isMC() && m_reweightHiggsPt && (eventInfo()->auxdata<int>("HTXS_Njets_pTjet25") < 2) ) {
     w_pT = HIGGS::ggF_01jet_hpT_weight( var::pT_h1.truth()*HG::invGeV );
   }
   
@@ -178,7 +178,7 @@ EL::StatusCode CouplingAnalysis::execute()
 
   // Create Histograms for Truth Acceptances ( requires unskimmed samples )
   int STXSbin = STXS::stage1_to_index( stage1 );
-  if (m_isTWH) STXSbin += 2;
+  if (m_isTWH && STXSbin > 0) STXSbin += 2;
 
   histoStore()->fillTH1F( "h_truthAcc_weightMC", STXSbin, wMC );
   histoStore()->fillTH1F( "h_truthAcc_weight",   STXSbin, w   );
