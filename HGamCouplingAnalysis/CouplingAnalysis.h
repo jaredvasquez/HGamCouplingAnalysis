@@ -17,6 +17,10 @@ private:
   bool m_useSystematics, m_reweightHiggsPt, m_isGGH, m_isTWH;
   HG::SystematicList sysList;
 
+  TTree *m_tree; //!
+  int m_category; 
+  double m_myy;
+
 public:
   // this is a standard constructor
   CouplingAnalysis() { }
