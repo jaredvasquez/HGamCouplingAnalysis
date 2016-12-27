@@ -61,7 +61,7 @@ EL::StatusCode CouplingAnalysis::createOutput()
   }
 
   // Create Histograms
-  int nCats(33), nBins(42), nIndex(52);
+  int nCats(33), nBins(42), nIndex(53);
 
   histoStore()->createTH1F( "h_truthAcc_weightMC", nBins, -0.5, nBins-0.5 );
   histoStore()->createTH1F( "h_truthAcc_weight",   nBins, -0.5, nBins-0.5 );
