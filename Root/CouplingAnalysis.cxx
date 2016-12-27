@@ -106,8 +106,6 @@ EL::StatusCode CouplingAnalysis::createOutput()
 
     histoStore()->createTH1F(  "h_catSTXS"+suffix,  nCats, 0.5, nCats+0.5 );
     histoStore()->createTH2F( "h2_catSTXS"+suffix,  nCats, 1, nCats+1, nBins, 0, nBins );
-
-    histoStore()->createTH1F(  "h_fineIndex"+suffix,  nCats, 0.5, nCats+0.5 );
     histoStore()->createTH2F( "h2_fineIndex"+suffix,  nCats, 1, nCats+1, nIndex, 0, nIndex );
   }
 
@@ -213,10 +211,8 @@ EL::StatusCode CouplingAnalysis::execute()
     if (w == 0.) return EL::StatusCode::SUCCESS;
 
     m_category = var::catCoup_Moriond2017();
-    histoStore()->fillTH1F(  "h_catSTXS"+suffix, m_category, w );
-    histoStore()->fillTH2F( "h2_catSTXS"+suffix, m_category, STXSbin, w );
-    
-    histoStore()->fillTH1F(  "h_fineIndex"+suffix, m_category, w );
+    histoStore()->fillTH1F(  "h_catSTXS"+suffix,   m_category, w );
+    histoStore()->fillTH2F( "h2_catSTXS"+suffix,   m_category, STXSbin, w );
     histoStore()->fillTH2F( "h2_fineIndex"+suffix, m_category, STXSbin, w );
 
     if (nominal) {
