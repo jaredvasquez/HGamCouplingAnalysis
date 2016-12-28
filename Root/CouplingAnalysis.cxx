@@ -173,6 +173,10 @@ EL::StatusCode CouplingAnalysis::execute()
   int fineIndex(0);
   if (isMC() && eventInfo()->isAvailable<int>("HTXS_Stage1_FineIndex_pTjet30")) {
     fineIndex = eventInfo()->auxdata<int>("HTXS_Stage1_FineIndex_pTjet30");
+    if (stage1 / 100 == 8) {
+      fineIndex = 49 + (stage1%100);
+      if (m_isTWH) fineIndex += 2;
+    }
   }
 
 

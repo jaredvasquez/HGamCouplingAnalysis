@@ -14,7 +14,7 @@ procName = {
 }
 
 procs=['ggH','VBF','WH','ZH','ttH','bbH','tWH','tHjb']
-procs=['ggH','VBF','WH','ZH','ttH','bbH']
+#procs=['ggH','VBF','WH','ZH','ttH','bbH']
 histName = 'h_truthAcc_fineIndex_weightMC'
 
 def getSumHist( h ):
@@ -44,7 +44,7 @@ for proc in procs:
   hsum = getSumHist( hbin )
   hbin.Divide( hbin, hsum, 1.0, 1.0, 'b' ) #binomial errors
 
-  print '\n  %s' % procName[proc]
+  print '\n//  %s' % procName[proc]
   print '-'*60
   for ibin, binName in enumerate( FineIndexLabels ):
     if (ibin < 1): continue

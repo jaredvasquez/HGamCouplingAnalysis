@@ -2,7 +2,7 @@ from ROOT import *
 from HGamMoriondCats import CatLabels
 
 nCats = len(CatLabels)
-datasets=['data15_all','data16_DS1','data16_DS4','data16_DS5','data16_DS6']
+datasets=['data15_all','data16_DS1','data16_DS2','data16_DS4','data16_DS5','data16_DS6']
 massPoints = { icat : [] for icat in xrange(1,nCats+1) }
 
 for dataset in datasets:
