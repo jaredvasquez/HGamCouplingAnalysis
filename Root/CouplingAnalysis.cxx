@@ -217,7 +217,7 @@ EL::StatusCode CouplingAnalysis::execute()
     m_category = var::catCoup_Moriond2017();
     histoStore()->fillTH1F(  "h_catSTXS"+suffix,   m_category, w );
     histoStore()->fillTH2F( "h2_catSTXS"+suffix,   m_category, STXSbin, w );
-    histoStore()->fillTH2F( "h2_fineIndex"+suffix, m_category, STXSbin, w );
+    histoStore()->fillTH2F( "h2_fineIndex"+suffix, m_category, fineIndex, w );
 
     if (nominal) {
       TString histName = TString::Format("h_myy_cat%d", m_category);

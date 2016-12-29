@@ -11,10 +11,35 @@ procName = {
    'bbH' : 'bbH (aMC@NLO + Pythia8)',
    'tWH' : 'tWH (aMC@NLO + Herwig++)',
   'tHjb' : 'tHjb (MadGraph + Pythia8)',
+# tH samples
+    'tWH_plus2' : 'tWH, k=+2 (aMC@NLO + Herwig++)',
+   'tHjb_plus2' : 'tHjb, k=+2 (MadGraph + Pythia8)',
+   'tWH_minus1' : 'tWH, k=-1 (aMC@NLO + Herwig++)',
+  'tHjb_minus1' : 'tHjb, k=-1 (MadGraph + Pythia8)',
 }
 
+
+# Cross Sections and Branching Ratios
+BR = 2.270E-03
+xsec = {          # [pb]
+         'ggH' : 4.852E+01,
+         'VBF' : 3.779E+00,
+         'WH'  : 1.369E+00,
+         'ZH'  : 8.824E-01,
+         'ttH' : 5.065E-01,
+         'bbH' : 4.863E-01,
+         'tWH' : 2.500E-02,
+        'tHjb' : 7.425E-02,
+   'tWH_plus2' : 9.700E-02,
+  'tHjb_plus2' : 2.685E-01,
+  'tWH_minus1' : 1.504E-01,
+ 'tHjb_minus1' : 7.320E-01,
+}
+binXS = []
+
+
+procs=['ggH','VBF','WH','ZH','ttH','bbH','tWH','tHjb','tWH_plus2','tHjb_plus2','tWH_minus1','tHjb_minus1']
 procs=['ggH','VBF','WH','ZH','ttH','bbH','tWH','tHjb']
-#procs=['ggH','VBF','WH','ZH','ttH','bbH']
 histName = 'h_truthAcc_fineIndex_weightMC'
 
 def getSumHist( h ):
@@ -52,4 +77,17 @@ for proc in procs:
     err = hbin.GetBinError( ibin+1 )
     if (acc != 0.0):
       print '%35s : %6.4f +/- %6.4f' % (binName, acc, err)
+      binXS.append( ( binName, acc*BR*xsec[proc]*1000) )
   print ''
+print '\n\n'
+
+# Get Cross-Sections
+import collections
+counts = collections.Counter(binXS)
+dups = [i for i in counts if counts[i]>1] # Check for duplicates
+if dups: print 'Uh oh! Duplicates of bins:', dups
+print '   STXS Cross-Sections [fb]'
+print '-'*45
+for binName, XS in binXS:
+  print '%30s : %8.3E' % (binName, XS)
+binsXSMap = { binName : XS for binName, XS in binXS }
