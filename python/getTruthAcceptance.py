@@ -89,5 +89,4 @@ if dups: print 'Uh oh! Duplicates of bins:', dups
 print '   STXS Cross-Sections [fb]'
 print '-'*45
 for binName, XS in binXS:
-  print '%30s : %8.3E' % (binName, XS)
-binsXSMap = { binName : XS for binName, XS in binXS }
+  print '%30s : %8.3E,' % ('\'%s\'' % binName, XS)
