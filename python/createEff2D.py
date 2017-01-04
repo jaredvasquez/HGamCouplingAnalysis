@@ -30,23 +30,21 @@ def sumHist( histName, tfs ):
     hsum.Add( tfs[i].Get( histName ) )
   return hsum
 
-def purityHistX( hist ):
-  hPurity = hist.Clone()
-  for ibin in xrange( 1, hist.GetNbinsX()+1 ):
-    NX = 0.0
-    for jbin in xrange( 1, hist.GetNbinsY()+1 ):
-      NX += hPurity.GetBinContent( ibin, jbin )
-    if (NX == 0.): continue
-    for jbin in xrange( 1, hist.GetNbinsY()+1 ):
-      hPurity.SetBinContent( ibin, jbin, hPurity.GetBinContent( ibin, jbin )/float(NX) )
-  return decorateHist( hPurity, "Truth Purity / Reco Category" )
-
 
 histName = "h2_catSTXS"
 procs = ["ggH","VBF","WH","ZH","ttH","bbH","tWH","tHjb"]
 tfs = [ TFile("output/Coupling_%s/hist-%s.root" % (p,p)) for p in procs ]
+htot = sumHist( 'h_truthAcc_weight', tfs )
 hsum = sumHist( histName, tfs )
-hpur = purityHistX( hsum )
+
+heff = hsum.Clone()
+for jbin in xrange( 1, hsum.GetNbinsY()+1 ):
+  Ntot = htot.GetBinContent( jbin )
+  if not Ntot: continue
+  for ibin in xrange( 1, hsum.GetNbinsX()+1 ):
+    eff = heff.GetBinContent( ibin, jbin ) / float(Ntot)
+    heff.SetBinContent( ibin, jbin, eff )
+heff = decorateHist( heff, "Truth Bin Efficiency" )
 
 # Filter down for a reduced binning
 filterList = ['UNKNOWN','_FWDH','GG2HLL','BBH']
@@ -81,13 +79,9 @@ def rebinHist( origHist, useBins, binsMap ):
 
   return hist
 
-hpur = rebinHist( hpur, binsKeep, binsMap )
+heff = rebinHist( heff, binsKeep, binsMap )
 
-#scaleCan = 1.5
-#can = TCanvas('can','can',int(800*scaleCan),int(600*scaleCan)); can.cd()
 can = TCanvas(); can.cd()
-#can.SetTopMargin(0.02)
-#can.SetBottomMargin(0.25)
 can.SetTopMargin(0.08)
 can.SetRightMargin(0.13)
 can.SetLeftMargin(0.28)
@@ -96,10 +90,10 @@ can.SetGrid()
 
 gridColor = kGray+1
 gStyle.SetGridColor(gridColor)
-hpur.GetXaxis().SetAxisColor(gridColor)
-hpur.GetYaxis().SetAxisColor(gridColor)
-hpur.Draw("colz")
-hpur.Draw("AXIS SAME")
+heff.GetXaxis().SetAxisColor(gridColor)
+heff.GetYaxis().SetAxisColor(gridColor)
+heff.Draw("colz")
+heff.Draw("AXIS SAME")
 
 paves = {}
 paves['ggH'] = TPave(  1,  0, 11,  9)
@@ -119,5 +113,5 @@ tl.DrawLatex(0.3, 0.95, "#bf{#it{#bf{ATLAS}} Internal}")
 tl.SetTextSize(0.04)
 tl.DrawLatex(0.55, 0.95, "#bf{#it{H #rightarrow #gamma#gamma, m_{H} = 125.09} GeV}")
 
-can.SaveAs("plots/purity2d.pdf")
-can.SaveAs("plots/purity2d.png")
+can.SaveAs("plots/eff2d.pdf")
+can.SaveAs("plots/eff2d.png")
