@@ -5,8 +5,8 @@ import HGamMoriondCats as HG
 
 # Parameters
 _NSYS = 120
-procs = ["WH"]
-strPATH = 'output/SystCoupling/SystCoupling_%s/hist-%s.root'
+procs = ['ggH']
+strPATH = 'output/HGamSyst_%s/hist-%s.root'
 
 
 # List all Categories
