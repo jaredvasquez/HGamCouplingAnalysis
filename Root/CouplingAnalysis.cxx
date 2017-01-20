@@ -160,67 +160,7 @@ EL::StatusCode CouplingAnalysis::execute()
   double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.0 : 1.003;
   
   double wMC = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight();
-  double w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017() * lumiXsecWeight();
-
-  // Save Histogram for Truth Acceptance
-  int stage1(0), prodMode(0), errorCode(0);
-  if (isMC() && eventInfo()->isAvailable<int>("HTXS_Stage1_Category_pTjet30")) {
-    stage1   = eventInfo()->auxdata<int>("HTXS_Stage1_Category_pTjet30");
-    prodMode = eventInfo()->auxdata<int>("HTXS_prodMode");
-
-    errorCode = eventInfo()->auxdata<int>("HTXS_errorCode");
-    if (errorCode != 0) stage1 = -1;
-  }
-  
-  int fineIndex(0);
-  if (isMC() && eventInfo()->isAvailable<int>("HTXS_Stage1_FineIndex_pTjet30")) {
-    fineIndex = eventInfo()->auxdata<int>("HTXS_Stage1_FineIndex_pTjet30");
-    if (stage1 / 100 == 8) {
-      fineIndex = 49 + (stage1%100);
-      if (m_isTWH) fineIndex += 2;
-    }
-  }
-
-  // Create Histograms for Truth Acceptances ( requires unskimmed samples )
-  int STXSbin = STXS::stage1_to_index( stage1 );
-  if (m_isTWH && STXSbin > 0) STXSbin += 2;
-
-  histoStore()->fillTH1F( "h_truthAcc_fineIndex_weightMC", fineIndex, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_fineIndex_weight", fineIndex, w );
-
-  histoStore()->fillTH1F( "h_truthAcc_weightMC", STXSbin, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_weight", STXSbin, w );
-
-  // Create histos for weighting
-  if ( isMC() ) {
-    histoStore()->fillTH1F( "h_initialEvents_weighted_pTRW", 1.0, weightInitial() * w_pT );
-    histoStore()->fillTH1F( "h_initialEvents_weighted",      1.0, weightInitial() );
-  }
-
-  if ( isMC() && not var::isDalitzEvent() ) {
-    histoStore()->fillTH1F( "h_initialEvents_noDalitz_weighted_pTRW", 1.0, weightInitial() * w_pT );
-    histoStore()->fillTH1F( "h_initialEvents_noDalitz_weighted",      1.0, weightInitial() );
-  }
-
-  // Loop over systematic variations
-  TString suffix = "";
-  for (auto sys: sysList) {
-
-    bool nominal = (sys.name() == "");
-    if (not nominal) {
-      if (not m_useSystematics) break;
-      if (isData()) break;
-
-      TString sysName = sys.name();
-
-      suffix = "_" + sys.name();
-      suffix.ReplaceAll(" ","_");
-      applySystematicVariation(sys);
-    }
-
-    if (not var::isPassed()) return EL::StatusCode::SUCCESS;
-
-    ouble w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
+  double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
 
   // Save Histogram for Truth Acceptance
   int stage1(0), prodMode(0), errorCode(0);
