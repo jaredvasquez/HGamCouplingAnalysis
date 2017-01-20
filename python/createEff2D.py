@@ -33,7 +33,7 @@ def sumHist( histName, tfs ):
 
 histName = "h2_catSTXS"
 procs = ["ggH","VBF","WH","ZH","ttH","bbH","tWH","tHjb"]
-tfs = [ TFile("output/Coupling_%s/hist-%s.root" % (p,p)) for p in procs ]
+tfs = [ TFile("output/HGamCoupling_%s/hist-%s.root" % (p,p)) for p in procs ]
 htot = sumHist( 'h_truthAcc_weight', tfs )
 hsum = sumHist( histName, tfs )
 

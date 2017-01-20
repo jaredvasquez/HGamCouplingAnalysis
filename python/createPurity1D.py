@@ -51,7 +51,7 @@ color['tHjb'] = 401
 
 histName = "h_catSTXS"
 procs = ["ggH","VBF","WH","ZH","ttH","tHjb","tWH","bbH"]
-tfs = [ TFile("output/Coupling_%s/hist-%s.root" % (p,p)) for p in procs ]
+tfs = [ TFile("output/HGamCoupling_%s/hist-%s.root" % (p,p)) for p in procs ]
 hs  = [ tf.Get(histName) for tf in tfs ]
 hsum = sumHist( histName, tfs )
 
