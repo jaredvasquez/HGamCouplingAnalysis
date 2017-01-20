@@ -154,10 +154,10 @@ EL::StatusCode CouplingAnalysis::execute()
   }
 
   // get correction factor for N_init with pT reweighting
-  double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.0 : 0.5;
+  double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.0 : 1.003;
   
   double wMC = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight();
-  double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
+  //double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
 
   // Save Histogram for Truth Acceptance
   int stage1(0), prodMode(0), errorCode(0);
@@ -214,7 +214,7 @@ EL::StatusCode CouplingAnalysis::execute()
 
     if (not var::isPassed()) return EL::StatusCode::SUCCESS;
 
-    w = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
+    double w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017() * lumiXsecWeight();
     if (w == 0.) return EL::StatusCode::SUCCESS;
 
     m_category = var::catCoup_Moriond2017();

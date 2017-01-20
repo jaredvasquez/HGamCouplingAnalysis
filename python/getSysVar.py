@@ -3,6 +3,8 @@ from sysTools import *
 from ROOT import *
 import HGamMoriondCats as HG
 
+doPruning = 1
+
 # Parameters
 _NSYS = 120
 procs = ['ggH','VBF','WH','ZH','ttH','bbH','tHjb','tWH']
@@ -53,28 +55,43 @@ for cat in HG.CatLabels:
   print '-'*40 + '\n'
   for proc in procs: #allSysByCat[cat]:
     print " ", proc
+
     mcstat = abs( allSysByCat[cat][proc]['MCstat'][0] )*100.
-    minsys = math.sqrt( (mcstat+1.0)**2 - mcstat**2 )
+    minsys = math.sqrt( (mcstat+1.0)**2 - mcstat**2 ) # Add at least 1.0% to the total uncertainty w/ stat uncert
+    minsys = math.sqrt( (1.05*mcstat)**2 - mcstat**2 ) # Impact the total uncertainty by at least 5%
+
     syslist = sorted(list(allSysByCat[cat][proc]))
-    #for sys in sorted(list(allSysByCat[cat][proc])):
     for sys in syslist + [ syslist.pop(syslist.index('MCstat')) ]:
       if 'EG_' in sys: continue
       if 'Trig' in sys: continue
       #if not 'PH_' in sys: continue
 
-      sigup, sigdn = allSysByCat[cat][proc][sys]
+      sigup, sigdn, form = allSysByCat[cat][proc][sys]
       sigup *= 100.; sigdn *= 100.
 
       tagasym = ''
       sigabs = (abs(sigup), abs(sigdn))
 
-      # if one or more systs are zero, assume low stats and prune
-      if not min(sigabs): continue
+      # tag if +/- variations are more than 100% diff
+      if ( min(sigabs) and max(sigabs)/min(sigabs) > 2 ): tagasym = '***'
 
-      # if +/- variations are more than 100% diff
-      if ( max(sigabs)/min(sigabs) > 2 ): tagasym = '***'
+      if (doPruning):
+        # if one or more systs are zero, assume low stats and prune
+        if not min(sigabs): continue
 
-      if ( sys != 'MCstat' and max(sigabs) < minsys ): continue
+        # prune if +/- variations are more than 1000% diff
+        if ( max(sigabs)/min(sigabs) > 5 ): continue
+
+        # if up/down are same sign variation, assume stat dominated and prune
+        if ((sigup*sigdn) > 0): continue
+
+        # prune if does not add 5% relative change to total uncert
+        if ( sys != 'MCstat' and max(sigabs) < minsys ): continue
+
+      # Rename some things
+      if (sys == 'MCstat'): sys = 'MCstat_%s_%s' % (cat,proc)
+      else: sys = 'ATLAS_'+sys
+
       #if not float( '%.2f' % sum( map( abs, list(allSysByCat[cat][proc][sys]) ) ) ): continue
       print "    -->", sys, "+/- ( %+.2f %%, %+.2f %% )" % (sigup,sigdn), tagasym
 

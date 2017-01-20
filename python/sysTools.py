@@ -26,8 +26,10 @@ def groupNPs( sysByCat ):
         dnsuf = suffixes[upsuf]
         if upsuf in sysName:
           npName = sysName.replace(upsuf,'')
-          dnsuf = upsuf if not (npName+dnsuf) in systs else dnsuf
-          newSysByCat[cat][npName] = ( systs[npName+upsuf], systs[npName+dnsuf] )
+          if not (npName+dnsuf) in systs:  # has up suffix but no down variation, e.g. JER
+            newSysByCat[cat][npName] = ( systs[npName+upsuf], -1.0*systs[npName+upsuf], 'logn' )
+          else:
+            newSysByCat[cat][npName] = ( systs[npName+upsuf], systs[npName+dnsuf], 'asym' )
           break
 
         elif dnsuf in sysName: # ignore _down suffixes, after quick check
@@ -37,11 +39,8 @@ def groupNPs( sysByCat ):
           break
 
       else: # Symmetric systematics
-        newSysByCat[cat][sysName] = ( systs[sysName], systs[sysName] )
+        newSysByCat[cat][sysName] = ( systs[sysName], -1.0*systs[sysName], 'logn' )
 
-  #for cat in newSysByCat:
-  #  for sys in newSysByCat[cat]:
-  #    print '))))', sys, newSysByCat[cat][sys]
   return newSysByCat
 
 
