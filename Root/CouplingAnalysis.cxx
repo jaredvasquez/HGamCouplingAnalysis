@@ -63,11 +63,14 @@ EL::StatusCode CouplingAnalysis::createOutput()
   // Create Histograms
   int nCats(33), nBins(42), nIndex(53);
 
-  histoStore()->createTH1F( "h_truthAcc_weightMC", nBins, -0.5, nBins-0.5 );
-  histoStore()->createTH1F( "h_truthAcc_weight",   nBins, -0.5, nBins-0.5 );
-  
   histoStore()->createTH1F( "h_truthAcc_fineIndex_weightMC", nIndex, -0.5, nIndex-0.5 );
-  histoStore()->createTH1F( "h_truthAcc_fineIndex_weight",   nIndex, -0.5, nIndex-0.5 );
+  histoStore()->createTH1F( "h_truthAcc_weightMC", nBins, -0.5, nBins-0.5 );
+
+  histoStore()->createTH1F( "h_initialEvents_weighted",      1, -10, 10 );
+  histoStore()->createTH1F( "h_initialEvents_weighted_pTRW", 1, -10, 10 ); 
+
+  histoStore()->createTH1F( "h_initialEvents_noDalitz_weighted",      1, -10, 10 );
+  histoStore()->createTH1F( "h_initialEvents_noDalitz_weighted_pTRW", 1, -10, 10 ); 
 
   HG::SystematicList allSys = getSystematics();
   int Nsysts = (isData()) ? 0 : allSys.size()-1;
@@ -145,15 +148,17 @@ EL::StatusCode CouplingAnalysis::execute()
 
   
   // Apply Higgs pT reweighting
-  double w_pT = 1.0;
+  double w_pT = 1.0; 
   if ( isMC() && m_reweightHiggsPt && (eventInfo()->auxdata<int>("HTXS_Njets_pTjet25") < 2) ) {
     w_pT = HIGGS::ggF_01jet_hpT_weight( var::pT_h1.truth()*HG::invGeV );
   }
+
+  // get correction factor for N_init with pT reweighting
+  double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.0 : 0.5;
   
   double wMC = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight();
-  double w   = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
+  double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
 
-  
   // Save Histogram for Truth Acceptance
   int stage1(0), prodMode(0), errorCode(0);
   if (isMC() && eventInfo()->isAvailable<int>("HTXS_Stage1_Category_pTjet30")) {
@@ -162,12 +167,6 @@ EL::StatusCode CouplingAnalysis::execute()
 
     errorCode = eventInfo()->auxdata<int>("HTXS_errorCode");
     if (errorCode != 0) stage1 = -1;
-
-    // Fix a bug in the STXS tool, remove this for new samples
-    //int   stxsNJ30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
-    //double stxsHPT = var::pT_h1.truth()*HG::invGeV; 
-    //double stxsHPT = eventInfo()->auxdata<float>("HTXS_Higgs_pt")*HG::invGeV;
-    //stage1 = STXS::fixBins_stage1( stage1, stxsNJ30, stxsHPT );
   }
   
   int fineIndex(0);
@@ -179,17 +178,23 @@ EL::StatusCode CouplingAnalysis::execute()
     }
   }
 
-
   // Create Histograms for Truth Acceptances ( requires unskimmed samples )
   int STXSbin = STXS::stage1_to_index( stage1 );
   if (m_isTWH && STXSbin > 0) STXSbin += 2;
 
-  histoStore()->fillTH1F( "h_truthAcc_weightMC", STXSbin, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_weight",   STXSbin, w   );
-  
   histoStore()->fillTH1F( "h_truthAcc_fineIndex_weightMC", fineIndex, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_fineIndex_weight",   fineIndex, w   );
-  
+  histoStore()->fillTH1F( "h_truthAcc_weightMC", STXSbin, wMC );
+
+  // Create histos for weighting
+  if ( isMC() ) {
+    histoStore()->fillTH1F( "h_initialEvents_weighted_pTRW", 1.0, weightInitial() * w_pT );
+    histoStore()->fillTH1F( "h_initialEvents_weighted",      1.0, weightInitial() );
+  }
+
+  if ( isMC() && not var::isDalitzEvent() ) {
+    histoStore()->fillTH1F( "h_initialEvents_noDalitz_weighted_pTRW", 1.0, weightInitial() * w_pT );
+    histoStore()->fillTH1F( "h_initialEvents_noDalitz_weighted",      1.0, weightInitial() );
+  }
 
   // Loop over systematic variations
   TString suffix = "";
@@ -201,8 +206,6 @@ EL::StatusCode CouplingAnalysis::execute()
       if (isData()) break;
 
       TString sysName = sys.name();
-      //if (sysName.Contains("Trig")) continue;
-      //if (sysName.Contains("_CorrUncertainty")) continue;
 
       suffix = "_" + sys.name();
       suffix.ReplaceAll(" ","_");

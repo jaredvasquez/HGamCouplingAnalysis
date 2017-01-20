@@ -5,9 +5,14 @@ import HGamMoriondCats as HG
 
 suffixes = { '__1up': '__1down', '_ScaleUp': '_ScaleDown' }
 
+def getStat( hnom ):
+  diff = [ abs(hnom.GetBinError(i+1)/hnom.GetBinContent(i+1)) if hnom.GetBinContent(i+1) else 0. for i in xrange(len(HG.CatLabels)) ]
+  return diff
+
 def getDiff( hnomOrig, hsysOrig ):
   hsys = hsysOrig.Clone()
   hsys.Add( hnomOrig, -1 )
+  hsys.Divide( hsysOrig )
   diff = [ hsys.GetBinContent(i+1) for i in xrange(len(HG.CatLabels)) ]
   return diff
 
@@ -32,21 +37,24 @@ def groupNPs( sysByCat ):
           break
 
       else: # Symmetric systematics
-        newSysByCat[cat][npName] = ( systs[sysName], systs[sysName] )
+        newSysByCat[cat][sysName] = ( systs[sysName], systs[sysName] )
 
+  #for cat in newSysByCat:
+  #  for sys in newSysByCat[cat]:
+  #    print '))))', sys, newSysByCat[cat][sys]
   return newSysByCat
 
 
 def getVariation( tfs, histName='h_catSTXS' ):
   systVars = {}
   hnom = tfs[0].Get(histName)
+  systVars['MCstat'] = getStat( hnom )
   for ifile in xrange(1,len(tfs)):
     tf = tfs[ifile]
     for k in tf.GetListOfKeys():
       keyName = k.GetName()
       if histName+'_' in keyName:
         sysName = keyName.replace(histName+'_','')
-        print '  ', sysName
         hsys = tfs[ifile].Get(keyName)
         systVars[sysName] = getDiff( hnom, hsys )
         break
