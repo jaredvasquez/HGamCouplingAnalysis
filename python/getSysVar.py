@@ -3,7 +3,7 @@ from sysTools import *
 from ROOT import *
 import HGamMoriondCats as HG
 
-doPruning = 1
+doPruning = 0
 
 # Parameters
 _NSYS = 120
@@ -57,7 +57,7 @@ for cat in HG.CatLabels:
     print " ", proc
 
     mcstat = abs( allSysByCat[cat][proc]['MCstat'][0] )*100.
-    minsys = math.sqrt( (mcstat+1.0)**2 - mcstat**2 ) # Add at least 1.0% to the total uncertainty w/ stat uncert
+    #minsys = math.sqrt( (mcstat+1.0)**2 - mcstat**2 ) # Add at least 1.0% to the total uncertainty w/ stat uncert
     minsys = math.sqrt( (1.05*mcstat)**2 - mcstat**2 ) # Impact the total uncertainty by at least 5%
 
     syslist = sorted(list(allSysByCat[cat][proc]))
@@ -79,11 +79,11 @@ for cat in HG.CatLabels:
         # if one or more systs are zero, assume low stats and prune
         if not min(sigabs): continue
 
-        # prune if +/- variations are more than 1000% diff
+        # prune if +/- variations are more than 500% diff
         if ( max(sigabs)/min(sigabs) > 5 ): continue
 
         # if up/down are same sign variation, assume stat dominated and prune
-        if ((sigup*sigdn) > 0): continue
+        #if ((sigup*sigdn) > 0): continue
 
         # prune if does not add 5% relative change to total uncert
         if ( sys != 'MCstat' and max(sigabs) < minsys ): continue

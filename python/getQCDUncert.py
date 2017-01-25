@@ -9,7 +9,7 @@ def printTable( table, header=None ):
     print "-"*len(head)
   for row in table: print " | ".join(row)
 
-tf = TFile("output/Coupling_ggH/hist-ggH.root")
+tf = TFile("output/HGamCoupling_ggH/hist-ggH.root")
 
 nCats, nBins = 10, len(binNames)
 
@@ -18,7 +18,6 @@ histName = "h2_catSTXS"
 systNames = [ 'QCDyield', 'QCDres', 'QCDcut01', 'QCDcut12' ]
 
 hnom = tf.Get( histName )
-
 for systName in systNames:
   hSystName = "%s_%s" % (histName, systName)
   hsys = tf.Get( hSystName )
