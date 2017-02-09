@@ -1,3 +1,5 @@
+#include <HGamCouplingAnalysis/ttHOptimization.h>
+
 #include <HGamCouplingAnalysis/CouplingAnalysis.h>
 
 #ifdef __CINT__
@@ -11,4 +13,8 @@
 
 #ifdef __CINT__
 #pragma link C++ class CouplingAnalysis+;
+#endif
+
+#ifdef __CINT__
+#pragma link C++ class ttHOptimization+;
 #endif
