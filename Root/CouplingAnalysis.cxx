@@ -138,7 +138,7 @@ EL::StatusCode CouplingAnalysis::createOutput()
 
   for ( int icat(1); icat < nCats+1; icat++ ) {
     TString histName = TString::Format("h_myy_cat%d",icat);
-    histoStore()->createTH1F( histName, 55, 105, 160, ";m_{#gamma#gamma} [GeV];Events / GeV");
+    histoStore()->createTH1F( histName, 110, 105, 160, ";m_{#gamma#gamma} [GeV];Events / GeV");
   }
 
   return EL::StatusCode::SUCCESS;
@@ -153,7 +153,7 @@ EL::StatusCode CouplingAnalysis::execute()
   HgammaAnalysis::execute();
 
   // Blind the data
-  if (isData() && var::m_yy() > 120*HG::GeV && var::m_yy() < 130*HG::GeV) return EL::StatusCode::SUCCESS;
+  if (isData() && var::m_yy() >= 120*HG::GeV && var::m_yy() < 130*HG::GeV) return EL::StatusCode::SUCCESS;
 
   
   // Apply Higgs pT reweighting
