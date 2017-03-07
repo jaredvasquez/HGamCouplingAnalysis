@@ -166,7 +166,8 @@ EL::StatusCode CouplingAnalysis::execute()
   double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.0 : 1.003;
   
   double wMC = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight();
-  double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
+  double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
+  //double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
 
   // Save Histogram for Truth Acceptance
   int stage1(0), prodMode(0), errorCode(0);
@@ -226,12 +227,15 @@ EL::StatusCode CouplingAnalysis::execute()
 
     if (not var::isPassed()) return EL::StatusCode::SUCCESS;
 
-    w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017() * lumiXsecWeight();
+    //w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017() * lumiXsecWeight();
+    w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
     if (w == 0.) return EL::StatusCode::SUCCESS;
 
     histoStore()->fillTH1F( "h_inclusive"+suffix, 0, w );
 
-    m_category = var::catCoup_Moriond2017();
+    //m_category = var::catCoup_Moriond2017();
+    m_category = var::catCoup_Moriond2017BDT();
+
     histoStore()->fillTH1F(  "h_catSTXS"+suffix,   m_category, w );
     histoStore()->fillTH2F( "h2_catSTXS"+suffix,   m_category, STXSbin, w );
     histoStore()->fillTH2F( "h2_fineIndex"+suffix, m_category, fineIndex, w );

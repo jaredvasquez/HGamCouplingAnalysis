@@ -48,9 +48,12 @@ color[ 'ttH'] = 880
 color[ 'bbH'] = 632
 color[ 'tWH'] = 800
 color['tHjb'] = 401
+color['ggH_NNLOPS'] = 416
+color[    'WH_NLO'] = 432
 
 histName = "h_catSTXS"
-procs = ["ggH","VBF","WH","ZH","ttH","tHjb","tWH","bbH"]
+#procs = ["ggH","VBF","WH","ZH","ttH","tHjb","tWH","bbH"]
+procs = ["ggH_NNLOPS","VBF","WH_NLO","ZH","ttH","tHjb","tWH"]
 tfs = [ TFile("output/HGamCoupling_%s/hist-%s.root" % (p,p)) for p in procs ]
 hs  = [ tf.Get(histName) for tf in tfs ]
 hsum = sumHist( histName, tfs )

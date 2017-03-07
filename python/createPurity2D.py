@@ -43,7 +43,8 @@ def purityHistX( hist ):
 
 
 histName = "h2_catSTXS"
-procs = ["ggH","VBF","WH","ZH","ttH","bbH","tWH","tHjb"]
+procs = ["ggH","VBF","WH","ZH","ttH","bbH","tHjb","tWH"]
+#procs = ["ggH_NNLOPS","VBF","WH_NLO","ZH","ttH","bbH","tHjb","tWH"]
 tfs = [ TFile("output/HGamCoupling_%s/hist-%s.root" % (p,p)) for p in procs ]
 hsum = sumHist( histName, tfs )
 hpur = purityHistX( hsum )
