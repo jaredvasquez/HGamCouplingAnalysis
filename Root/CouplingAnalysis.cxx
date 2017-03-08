@@ -5,6 +5,7 @@
 // Additional Helpers
 #include "HGamCouplingAnalysis/STXSHelpers.h"
 #include "HGamCouplingAnalysis/HiggsHelpers.h"
+#include <cmath>
 
 
 // this is needed to distribute the algorithm to the workers
@@ -39,18 +40,32 @@ EL::StatusCode CouplingAnalysis::createOutput()
 
   // Only apply the reweighting to ggH MC
   m_reweightHiggsPt = config()->getBool("HGamCoupling.ReweightHiggsPt", false);
+  
+  int mcid = eventInfo()->mcChannelNumber();
 
   m_isGGH = false;
   m_isTWH = false;
   if (isMC()) {
-    m_isGGH = getMCSampleName(eventInfo()->mcChannelNumber()).Contains("ggH125");
-    m_isTWH = getMCSampleName(eventInfo()->mcChannelNumber()).Contains("tWH125");
+    m_isGGH = getMCSampleName(mcid).Contains("ggH125");
+    m_isTWH = getMCSampleName(mcid).Contains("tWH125");
     m_reweightHiggsPt &= m_isGGH;
   } else m_reweightHiggsPt = false;
     
 
   if (m_reweightHiggsPt) std::cout << "*** !!! REWEIGHTING HIGGS PT !!! ***" << std::endl;
   else               std::cout << "*** !!! NOT REWEIGHTING HIGGS PT !!! ***" << std::endl;
+      
+  m_usePDFUncerts = false;
+  StrV higgsTypes = config()->getStrV("EventHandler.HiggsWeights.Types", {});
+  for (TString sample: higgsTypes) {
+    StrV dsids = config()->getStrV("EventHandler.HiggsWeights."+sample, {""});
+    for (TString dsid: dsids) {
+      if (mcid == std::atoi(dsid.Data())) {
+        m_usePDFUncerts = true;
+      }
+    }
+  }
+  m_usePDFUncerts &= config()->getBool("HGamCoupling.UsePDFSystematics", false);
 
   // Create Data TTree
   if (isData()) {
@@ -136,6 +151,15 @@ EL::StatusCode CouplingAnalysis::createOutput()
     histoStore()->createTH2F( "h2_fineIndex_QCDcut12", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
   }
 
+  if (m_usePDFUncerts) {
+    for(int ipdf(0); ipdf < 30; ipdf++) {
+      TString suffixPDF = TString::Format("_PDF%d",ipdf);
+      histoStore()->createTH1F( "h_catSTXS"+suffixPDF,  nCats, 0.5, nCats+0.5 );
+      histoStore()->createTH2F( "h2_catSTXS"+suffixPDF,  nCats, 1, nCats+1, nBins, 0, nBins );
+      histoStore()->createTH2F( "h2_fineIndex"+suffixPDF,  nCats, 1, nCats+1, nIndex, 0, nIndex );
+    }
+  }
+
   for ( int icat(1); icat < nCats+1; icat++ ) {
     TString histName = TString::Format("h_myy_cat%d",icat);
     histoStore()->createTH1F( histName, 110, 105, 160, ";m_{#gamma#gamma} [GeV];Events / GeV");
@@ -170,11 +194,9 @@ EL::StatusCode CouplingAnalysis::execute()
   //double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017() * lumiXsecWeight();
 
   // Save Histogram for Truth Acceptance
-  int stage1(0), prodMode(0), errorCode(0);
+  int stage1(0), errorCode(0);
   if (isMC() && eventInfo()->isAvailable<int>("HTXS_Stage1_Category_pTjet30")) {
     stage1   = eventInfo()->auxdata<int>("HTXS_Stage1_Category_pTjet30");
-    prodMode = eventInfo()->auxdata<int>("HTXS_prodMode");
-
     errorCode = eventInfo()->auxdata<int>("HTXS_errorCode");
     if (errorCode != 0) stage1 = -1;
   }
@@ -230,6 +252,8 @@ EL::StatusCode CouplingAnalysis::execute()
     //w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017() * lumiXsecWeight();
     w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
     if (w == 0.) return EL::StatusCode::SUCCESS;
+    
+    xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
 
     histoStore()->fillTH1F( "h_inclusive"+suffix, 0, w );
 
@@ -273,6 +297,21 @@ EL::StatusCode CouplingAnalysis::execute()
         histoStore()->fillTH2F( "h2_fineIndex_QCDcut01", m_category, fineIndex, wQCDcut01 );
         histoStore()->fillTH2F( "h2_fineIndex_QCDcut12", m_category, fineIndex, wQCDcut12 );
       }
+
+      // PDF uncertainties
+      if (m_usePDFUncerts) {
+        for (int ipdf(0); ipdf < 30; ipdf++)  {
+          if (higgsWeights.nominal == 0 || !std::isfinite(higgsWeights.nominal)) {
+            std::cout << "*** nominal = " << higgsWeights.nominal << std::endl;
+          }
+          double wPDF = w * higgsWeights.pdf4lhc[ipdf] / higgsWeights.nominal;
+          TString suffixPDF = TString::Format("_PDF%d",ipdf);
+          histoStore()->fillTH1F(  "h_catSTXS"+suffixPDF,   m_category, wPDF );
+          histoStore()->fillTH2F( "h2_catSTXS"+suffixPDF,   m_category, STXSbin, wPDF );
+          histoStore()->fillTH2F( "h2_fineIndex"+suffixPDF, m_category, fineIndex, wPDF );
+        }
+      }
+
     }
     
   }

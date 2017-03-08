@@ -14,7 +14,10 @@ public:
   // node (done by the //!)
 
 private:
-  bool m_useSystematics, m_reweightHiggsPt, m_isGGH, m_isTWH;
+  bool m_useSystematics;
+  bool m_reweightHiggsPt;
+  bool m_usePDFUncerts;
+  bool m_isGGH, m_isTWH;
   HG::SystematicList sysList;
 
   TTree *m_tree; //!
