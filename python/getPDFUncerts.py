@@ -15,8 +15,7 @@ def getPDFUncerts(tf):
     for icat, catName in enumerate(HG.CatLabels):
       nom = hnom.GetBinContent(icat+1)
       sys = hsys[ipdf].GetBinContent(icat+1)
-      systMap[catName]['ATLAS_PDF4LHC_NLO_30_EV%d' % (ipdf+1)] = sys #getDiff(nom, sys)
-      #systMap[catName]['ATLAS_PDF4LHC_NLO_30_EV%d' % (ipdf+1)] = (nom, sys) #getDiff(nom, sys)
+      systMap[catName]['ATLAS_PDF4LHC_NLO_30_EV%d' % (ipdf+1)] = getDiff(nom, sys)
 
   for catName in reversed(HG.CatLabels):
     print '\n  '+catName
@@ -28,6 +27,8 @@ def getPDFUncerts(tf):
 if __name__ == "__main__":
   # execute only if run as a script
   procs = ['VBF_PDF']
+  procs = ['WH_NLO']
+  #procs = ['ggH_NNLOPS']
 
   for proc in procs:
     banner = '===      %s      ===' % proc

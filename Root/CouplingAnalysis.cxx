@@ -301,10 +301,8 @@ EL::StatusCode CouplingAnalysis::execute()
       // PDF uncertainties
       if (m_usePDFUncerts) {
         for (int ipdf(0); ipdf < 30; ipdf++)  {
-          if (higgsWeights.nominal == 0 || !std::isfinite(higgsWeights.nominal)) {
-            std::cout << "*** nominal = " << higgsWeights.nominal << std::endl;
-          }
           double wPDF = w * higgsWeights.pdf4lhc[ipdf] / higgsWeights.nominal;
+          if (!std::isfinite(wPDF)) wPDF = w;
           TString suffixPDF = TString::Format("_PDF%d",ipdf);
           histoStore()->fillTH1F(  "h_catSTXS"+suffixPDF,   m_category, wPDF );
           histoStore()->fillTH2F( "h2_catSTXS"+suffixPDF,   m_category, STXSbin, wPDF );
