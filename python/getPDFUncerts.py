@@ -7,8 +7,10 @@ def getDiff(nom, sys):
 
 
 def getPDFUncerts(tf):
-  hnom = tf.Get('h_catSTXS')
-  hsys = [ tf.Get('h_catSTXS_PDF%d' % i) for i in xrange(30) ]
+  hnom  = tf.Get('h_catSTXS')
+  othersys = '_alphaS_up _alphaS_dn'.split()
+  hsys  = [ tf.Get('h_catSTXS_PDF%d' % i) for i in xrange(30) ]
+  hsys += [ tf.Get('h_catSTXS'+suf) for suf in othersys ]
   systMap = { cat : {} for cat in HG.CatLabels }
 
   for ipdf in xrange(30):

@@ -41,7 +41,7 @@ EL::StatusCode CouplingAnalysis::createOutput()
   // Only apply the reweighting to ggH MC
   m_reweightHiggsPt = config()->getBool("HGamCoupling.ReweightHiggsPt", false);
   
-  int mcid = eventInfo()->mcChannelNumber();
+  int mcid = (isData()) ? -999 : eventInfo()->mcChannelNumber();
 
   m_isGGH = false;
   m_isTWH = false;
@@ -56,12 +56,14 @@ EL::StatusCode CouplingAnalysis::createOutput()
   else               std::cout << "*** !!! NOT REWEIGHTING HIGGS PT !!! ***" << std::endl;
       
   m_usePDFUncerts = false;
-  StrV higgsTypes = config()->getStrV("EventHandler.HiggsWeights.Types", {});
-  for (TString sample: higgsTypes) {
-    StrV dsids = config()->getStrV("EventHandler.HiggsWeights."+sample, {""});
-    for (TString dsid: dsids) {
-      if (mcid == std::atoi(dsid.Data())) {
-        m_usePDFUncerts = true;
+  if (isMC()) {
+    StrV higgsTypes = config()->getStrV("EventHandler.HiggsWeights.Types", {});
+    for (TString sample: higgsTypes) {
+      StrV dsids = config()->getStrV("EventHandler.HiggsWeights."+sample, {""});
+      for (TString dsid: dsids) {
+        if (mcid == std::atoi(dsid.Data())) {
+          m_usePDFUncerts = true;
+        }
       }
     }
   }
@@ -152,7 +154,13 @@ EL::StatusCode CouplingAnalysis::createOutput()
   }
 
   if (m_usePDFUncerts) {
-    for(int ipdf(0); ipdf < 30; ipdf++) {
+    for (TString suffix: {"_alphaS_up","_alphaS_dn"}) {
+      histoStore()->createTH1F( "h_catSTXS"+suffix,  nCats, 0.5, nCats+0.5 );
+      histoStore()->createTH2F( "h2_catSTXS"+suffix,  nCats, 1, nCats+1, nBins, 0, nBins );
+      histoStore()->createTH2F( "h2_fineIndex"+suffix,  nCats, 1, nCats+1, nIndex, 0, nIndex );
+    }
+
+    for (int ipdf(0); ipdf < 30; ipdf++) {
       TString suffixPDF = TString::Format("_PDF%d",ipdf);
       histoStore()->createTH1F( "h_catSTXS"+suffixPDF,  nCats, 0.5, nCats+0.5 );
       histoStore()->createTH2F( "h2_catSTXS"+suffixPDF,  nCats, 1, nCats+1, nBins, 0, nBins );
@@ -253,8 +261,6 @@ EL::StatusCode CouplingAnalysis::execute()
     w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
     if (w == 0.) return EL::StatusCode::SUCCESS;
     
-    xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
-
     histoStore()->fillTH1F( "h_inclusive"+suffix, 0, w );
 
     //m_category = var::catCoup_Moriond2017();
@@ -298,10 +304,24 @@ EL::StatusCode CouplingAnalysis::execute()
         histoStore()->fillTH2F( "h2_fineIndex_QCDcut12", m_category, fineIndex, wQCDcut12 );
       }
 
-      // PDF uncertainties
-      if (m_usePDFUncerts) {
+      // PDF and alpha_S uncertainties
+      if (isMC() && m_usePDFUncerts) {
+        xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
+
+        double wASHI = w * higgsWeights.alphaS_up / higgsWeights.nominal;
+        if (!std::isfinite(wASHI)) wASHI = w;
+        histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
+        histoStore()->fillTH2F( "h2_catSTXS_alphaS_up",   m_category, STXSbin, wASHI );
+        histoStore()->fillTH2F( "h2_fineIndex_alphaS_up", m_category, fineIndex, wASHI );
+
+        double wASLO = w * higgsWeights.alphaS_dn / higgsWeights.nominal;
+        if (!std::isfinite(wASLO)) wASLO = w;
+        histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASHI );
+        histoStore()->fillTH2F( "h2_catSTXS_alphaS_dn",   m_category, STXSbin, wASHI );
+        histoStore()->fillTH2F( "h2_fineIndex_alphaS_dn", m_category, fineIndex, wASHI );
+
         for (int ipdf(0); ipdf < 30; ipdf++)  {
-          double wPDF = w * higgsWeights.pdf4lhc[ipdf] / higgsWeights.nominal;
+          double wPDF = w * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
           if (!std::isfinite(wPDF)) wPDF = w;
           TString suffixPDF = TString::Format("_PDF%d",ipdf);
           histoStore()->fillTH1F(  "h_catSTXS"+suffixPDF,   m_category, wPDF );
