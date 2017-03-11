@@ -141,32 +141,6 @@ EL::StatusCode CouplingAnalysis::createOutput()
   // Histograms below only for nominal samples
   if (sysIndex > 0) return EL::StatusCode::SUCCESS;
     
-  if (m_isGGH) {
-    histoStore()->createTH2F( "h2_catSTXS_QCDyield", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    histoStore()->createTH2F( "h2_catSTXS_QCDres",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    histoStore()->createTH2F( "h2_catSTXS_QCDcut01", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    histoStore()->createTH2F( "h2_catSTXS_QCDcut12", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    
-    histoStore()->createTH2F( "h2_fineIndex_QCDyield", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-    histoStore()->createTH2F( "h2_fineIndex_QCDres",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-    histoStore()->createTH2F( "h2_fineIndex_QCDcut01", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-    histoStore()->createTH2F( "h2_fineIndex_QCDcut12", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-    
-    histoStore()->createTH2F( "h2_catSTXS_WG1_QCDmu",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    histoStore()->createTH2F( "h2_catSTXS_WG1_QCDqm",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    histoStore()->createTH2F( "h2_catSTXS_WG1_QCDres",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    histoStore()->createTH2F( "h2_catSTXS_WG1_QCDpTH",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    histoStore()->createTH2F( "h2_catSTXS_WG1_QCDmig01", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    histoStore()->createTH2F( "h2_catSTXS_WG1_QCDmig12", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-    
-    histoStore()->createTH2F( "h2_fineIndex_WG1_QCDmu",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-    histoStore()->createTH2F( "h2_fineIndex_WG1_QCDqm",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-    histoStore()->createTH2F( "h2_fineIndex_WG1_QCDres",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-    histoStore()->createTH2F( "h2_fineIndex_WG1_QCDpTH",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-    histoStore()->createTH2F( "h2_fineIndex_WG1_QCDmig01", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-    histoStore()->createTH2F( "h2_fineIndex_WG1_QCDmig12", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-  }
-
   if (m_usePDFUncerts) {
     for (TString suffix: {"_alphaS_up","_alphaS_dn"}) {
       histoStore()->createTH1F( "h_catSTXS"+suffix,  nCats, 0.5, nCats+0.5 );
@@ -179,6 +153,22 @@ EL::StatusCode CouplingAnalysis::createOutput()
       histoStore()->createTH1F( "h_catSTXS"+suffixPDF,  nCats, 0.5, nCats+0.5 );
       histoStore()->createTH2F( "h2_catSTXS"+suffixPDF,  nCats, 1, nCats+1, nBins, 0, nBins );
       histoStore()->createTH2F( "h2_fineIndex"+suffixPDF,  nCats, 1, nCats+1, nIndex, 0, nIndex );
+    }
+
+    if (m_isGGH) {
+      histoStore()->createTH2F( "h2_catSTXS_QCDmu",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_QCDqm",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_QCDres",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_QCDpTH",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_QCDmig01", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_QCDmig12", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      
+      histoStore()->createTH2F( "h2_fineIndex_QCDmu",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_QCDqm",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_QCDres",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_QCDpTH",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_QCDmig01", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_QCDmig12", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
     }
   }
 
@@ -297,27 +287,6 @@ EL::StatusCode CouplingAnalysis::execute()
 
       m_myy = var::m_yy()*HG::invGeV;
       if (isData()) m_tree->Fill();
-
-      if (m_isGGH) {
-        int Njets30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
-        //int Njets30 = var::N_j_30.truth();
-        
-        // degraded method -- scheduled for removal
-        double wQCDyield = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::yield, Njets30, +1.0);
-        double wQCDres   = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::res,   Njets30, +1.0);
-        double wQCDcut01 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut01, Njets30, +1.0);
-        double wQCDcut12 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut12, Njets30, +1.0);
-        
-        histoStore()->fillTH2F( "h2_catSTXS_QCDyield", m_category, STXSbin, wQCDyield );
-        histoStore()->fillTH2F( "h2_catSTXS_QCDres",   m_category, STXSbin, wQCDres   );
-        histoStore()->fillTH2F( "h2_catSTXS_QCDcut01", m_category, STXSbin, wQCDcut01 );
-        histoStore()->fillTH2F( "h2_catSTXS_QCDcut12", m_category, STXSbin, wQCDcut12 );
-        
-        histoStore()->fillTH2F( "h2_fineIndex_QCDyield", m_category, fineIndex, wQCDyield );
-        histoStore()->fillTH2F( "h2_fineIndex_QCDres",   m_category, fineIndex, wQCDres   );
-        histoStore()->fillTH2F( "h2_fineIndex_QCDcut01", m_category, fineIndex, wQCDcut01 );
-        histoStore()->fillTH2F( "h2_fineIndex_QCDcut12", m_category, fineIndex, wQCDcut12 );
-      }
 
       // PDF, alpha_S, and ggH QCD uncertainties
       if (isMC() && m_usePDFUncerts) {
