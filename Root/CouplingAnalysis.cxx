@@ -302,48 +302,21 @@ EL::StatusCode CouplingAnalysis::execute()
         int Njets30 = eventInfo()->auxdata<int>("HTXS_Njets_pTjet30");
         //int Njets30 = var::N_j_30.truth();
         
-        {
-          double wQCDyield = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::yield, Njets30, +1.0);
-          double wQCDres   = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::res,   Njets30, +1.0);
-          double wQCDcut01 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut01, Njets30, +1.0);
-          double wQCDcut12 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut12, Njets30, +1.0);
-          
-          histoStore()->fillTH2F( "h2_catSTXS_QCDyield", m_category, STXSbin, wQCDyield );
-          histoStore()->fillTH2F( "h2_catSTXS_QCDres",   m_category, STXSbin, wQCDres   );
-          histoStore()->fillTH2F( "h2_catSTXS_QCDcut01", m_category, STXSbin, wQCDcut01 );
-          histoStore()->fillTH2F( "h2_catSTXS_QCDcut12", m_category, STXSbin, wQCDcut12 );
-          
-          histoStore()->fillTH2F( "h2_fineIndex_QCDyield", m_category, fineIndex, wQCDyield );
-          histoStore()->fillTH2F( "h2_fineIndex_QCDres",   m_category, fineIndex, wQCDres   );
-          histoStore()->fillTH2F( "h2_fineIndex_QCDcut01", m_category, fineIndex, wQCDcut01 );
-          histoStore()->fillTH2F( "h2_fineIndex_QCDcut12", m_category, fineIndex, wQCDcut12 );
-        }
+        // degraded method -- scheduled for removal
+        double wQCDyield = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::yield, Njets30, +1.0);
+        double wQCDres   = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::res,   Njets30, +1.0);
+        double wQCDcut01 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut01, Njets30, +1.0);
+        double wQCDcut12 = w * HIGGS::getJetBinUncertaintyWeight( HIGGS::cut12, Njets30, +1.0);
         
-        {
-          xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
-
-          double wQCDmu    = w * higgsWeights.qcd_wg1_mu    / higgsWeights.nominal;
-          double wQCDqm    = w * higgsWeights.qcd_wg1_qm    / higgsWeights.nominal;
-          double wQCDres   = w * higgsWeights.qcd_wg1_res   / higgsWeights.nominal;
-          double wQCDpTH   = w * higgsWeights.qcd_wg1_pTH   / higgsWeights.nominal;
-          double wQCDmig01 = w * higgsWeights.qcd_wg1_mig01 / higgsWeights.nominal;
-          double wQCDmig12 = w * higgsWeights.qcd_wg1_mig12 / higgsWeights.nominal;
-          
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDmu",    m_category, STXSbin, wQCDmu    );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDqm",    m_category, STXSbin, wQCDqm    );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDres",   m_category, STXSbin, wQCDres   );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDpTH",   m_category, STXSbin, wQCDpTH   );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDmig01", m_category, STXSbin, wQCDmig01 );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDmig12", m_category, STXSbin, wQCDmig12 );
-          
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDmu",    m_category, fineIndex, wQCDmu    );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDqm",    m_category, fineIndex, wQCDqm    );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDres",   m_category, fineIndex, wQCDres   );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDpTH",   m_category, fineIndex, wQCDpTH   );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDmig01", m_category, fineIndex, wQCDmig01 );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDmig12", m_category, fineIndex, wQCDmig12 );
-        }
-    
+        histoStore()->fillTH2F( "h2_catSTXS_QCDyield", m_category, STXSbin, wQCDyield );
+        histoStore()->fillTH2F( "h2_catSTXS_QCDres",   m_category, STXSbin, wQCDres   );
+        histoStore()->fillTH2F( "h2_catSTXS_QCDcut01", m_category, STXSbin, wQCDcut01 );
+        histoStore()->fillTH2F( "h2_catSTXS_QCDcut12", m_category, STXSbin, wQCDcut12 );
+        
+        histoStore()->fillTH2F( "h2_fineIndex_QCDyield", m_category, fineIndex, wQCDyield );
+        histoStore()->fillTH2F( "h2_fineIndex_QCDres",   m_category, fineIndex, wQCDres   );
+        histoStore()->fillTH2F( "h2_fineIndex_QCDcut01", m_category, fineIndex, wQCDcut01 );
+        histoStore()->fillTH2F( "h2_fineIndex_QCDcut12", m_category, fineIndex, wQCDcut12 );
       }
 
       // PDF and alpha_S uncertainties
@@ -370,6 +343,30 @@ EL::StatusCode CouplingAnalysis::execute()
           histoStore()->fillTH2F( "h2_catSTXS"+suffixPDF,   m_category, STXSbin, wPDF );
           histoStore()->fillTH2F( "h2_fineIndex"+suffixPDF, m_category, fineIndex, wPDF );
         }
+        
+        if (m_isGGH) { 
+          double wQCDmu    = w * higgsWeights.qcd_wg1_mu    / higgsWeights.nominal;
+          double wQCDqm    = w * higgsWeights.qcd_wg1_qm    / higgsWeights.nominal;
+          double wQCDres   = w * higgsWeights.qcd_wg1_res   / higgsWeights.nominal;
+          double wQCDpTH   = w * higgsWeights.qcd_wg1_pTH   / higgsWeights.nominal;
+          double wQCDmig01 = w * higgsWeights.qcd_wg1_mig01 / higgsWeights.nominal;
+          double wQCDmig12 = w * higgsWeights.qcd_wg1_mig12 / higgsWeights.nominal;
+          
+          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDmu",    m_category, STXSbin, wQCDmu    );
+          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDqm",    m_category, STXSbin, wQCDqm    );
+          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDres",   m_category, STXSbin, wQCDres   );
+          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDpTH",   m_category, STXSbin, wQCDpTH   );
+          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDmig01", m_category, STXSbin, wQCDmig01 );
+          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDmig12", m_category, STXSbin, wQCDmig12 );
+          
+          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDmu",    m_category, fineIndex, wQCDmu    );
+          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDqm",    m_category, fineIndex, wQCDqm    );
+          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDres",   m_category, fineIndex, wQCDres   );
+          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDpTH",   m_category, fineIndex, wQCDpTH   );
+          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDmig01", m_category, fineIndex, wQCDmig01 );
+          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDmig12", m_category, fineIndex, wQCDmig12 );
+        }
+    
       }
 
     }
