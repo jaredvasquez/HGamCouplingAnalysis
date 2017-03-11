@@ -127,12 +127,6 @@ EL::StatusCode CouplingAnalysis::createOutput()
       suffix.ReplaceAll(" ","_");
     }
 
-    histoStore()->createTH1F( "h_inclusive"+suffix,  1, -10, 10 );
-    histoStore()->createTH1F(   "h_pT_y1", 50, 0, 250 );
-    histoStore()->createTH1F(   "h_pT_y2", 50, 0, 250 );
-    histoStore()->createTH1F(  "h_eta_y1", 52, -2.6, 2.6 );
-    histoStore()->createTH1F(  "h_eta_y2", 52, -2.6, 2.6 );
- 
     histoStore()->createTH1F(  "h_catSTXS"+suffix,  nCats, 0.5, nCats+0.5 );
     histoStore()->createTH2F( "h2_catSTXS"+suffix,  nCats, 1, nCats+1, nBins, 0, nBins );
     histoStore()->createTH2F( "h2_fineIndex"+suffix,  nCats, 1, nCats+1, nIndex, 0, nIndex );
@@ -265,8 +259,6 @@ EL::StatusCode CouplingAnalysis::execute()
     w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
     if (w == 0.) return EL::StatusCode::SUCCESS;
     
-    histoStore()->fillTH1F( "h_inclusive"+suffix, 0, w );
-
     //m_category = var::catCoup_Moriond2017();
     m_category = var::catCoup_Moriond2017BDT();
 
@@ -277,13 +269,6 @@ EL::StatusCode CouplingAnalysis::execute()
     if (nominal) {
       TString histName = TString::Format("h_myy_cat%d", m_category);
       histoStore()->fillTH1F( histName, var::m_yy()*HG::invGeV, w );
-
-      xAOD::PhotonContainer all_photons = photonHandler()->getCorrectedContainer();
-      xAOD::PhotonContainer selPhotons = photonHandler()->applySelection(all_photons);
-      histoStore()->fillTH1F( "h_pT_y1", var::pT_y1()*HG::invGeV, w );
-      histoStore()->fillTH1F( "h_pT_y2", var::pT_y2()*HG::invGeV, w );
-      histoStore()->fillTH1F( "h_eta_y1", selPhotons[0]->eta(), w );
-      histoStore()->fillTH1F( "h_eta_y2", selPhotons[1]->eta(), w );
 
       m_myy = var::m_yy()*HG::invGeV;
       if (isData()) m_tree->Fill();
