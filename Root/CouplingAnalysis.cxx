@@ -319,7 +319,7 @@ EL::StatusCode CouplingAnalysis::execute()
         histoStore()->fillTH2F( "h2_fineIndex_QCDcut12", m_category, fineIndex, wQCDcut12 );
       }
 
-      // PDF and alpha_S uncertainties
+      // PDF, alpha_S, and ggH QCD uncertainties
       if (isMC() && m_usePDFUncerts) {
         xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
 
