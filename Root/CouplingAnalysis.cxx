@@ -324,15 +324,18 @@ EL::StatusCode CouplingAnalysis::execute()
         xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
 
         double wASHI = w * higgsWeights.alphaS_up / higgsWeights.nominal;
-        if (!std::isfinite(wASHI)) wASHI = w;
-        histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
-        histoStore()->fillTH2F( "h2_catSTXS_alphaS_up",   m_category, STXSbin, wASHI );
-        histoStore()->fillTH2F( "h2_fineIndex_alphaS_up", m_category, fineIndex, wASHI );
-
         double wASLO = w * higgsWeights.alphaS_dn / higgsWeights.nominal;
+
+        if (!std::isfinite(wASHI)) wASHI = w;
         if (!std::isfinite(wASLO)) wASLO = w;
+
+        histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
         histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASHI );
+
+        histoStore()->fillTH2F( "h2_catSTXS_alphaS_up",   m_category, STXSbin, wASHI );
         histoStore()->fillTH2F( "h2_catSTXS_alphaS_dn",   m_category, STXSbin, wASHI );
+
+        histoStore()->fillTH2F( "h2_fineIndex_alphaS_up", m_category, fineIndex, wASHI );
         histoStore()->fillTH2F( "h2_fineIndex_alphaS_dn", m_category, fineIndex, wASHI );
 
         for (int ipdf(0); ipdf < 30; ipdf++)  {
