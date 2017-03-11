@@ -94,8 +94,8 @@ EL::StatusCode CouplingAnalysis::createOutput()
 
   HG::SystematicList allSys = getSystematics();
   int Nsysts = (isData()) ? 0 : allSys.size()-1;
-  if (Nsysts > 0) std::cout << "Running over " << Nsysts << " systematics:" << std::endl;
   if (Nsysts > 0) {
+    std::cout << "Running over " << Nsysts << " systematics:" << std::endl;
     for (int i(0); i <= Nsysts; i++ )
       std::cout << "\t" << i << " " << allSys[i].name() << std::endl;
   }
