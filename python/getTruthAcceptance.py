@@ -3,18 +3,22 @@ from math import sqrt
 from STXSFineIndex import FineIndexLabels
 
 procName = {
-   'ggH' : 'ggH (Powheg + Pythia8), with pTH rweighting',
-   'VBF' : 'VBF (Powheg + Pythia8)',
-   'WH'  : 'WH (Pythia8)',
-   'ZH'  : 'ZH (Pythia8)',
-   'ttH' : 'ttH (aMC@NLO + Pythia8)',
-   'bbH' : 'bbH (aMC@NLO + Pythia8)',
-   'tWH' : 'tWH (aMC@NLO + Herwig++)',
-  'tHjb' : 'tHjb (MadGraph + Pythia8)',
+   #'ggH' : 'ggH (Powheg + Pythia8), with pTH rweighting',
+   #'VBF' : 'VBF (Powheg + Pythia8)',
+   #'WH'  : 'WH (Pythia8)',
+   #'ZH'  : 'ZH (Pythia8)',
+   'ggH_NNLOPS' : 'ggH (NNLOPS)',
+    'VBF_NNPDF' : 'VBF (Powheg + Pythia8, NNPDF)',
+       'WH_NLO' : 'WH (Powheg + Pythia8)',
+       'ZH_NLO' : 'ZH (Powheg + Pythia8)',
+          'ttH' : 'ttH (aMC@NLO + Pythia8)',
+          'bbH' : 'bbH (aMC@NLO + Pythia8)',
+          'tHW' : 'tHW (aMC@NLO + Herwig++)',
+         'tHjb' : 'tHjb (MadGraph + Pythia8)',
 # tH samples
-    'tWH_plus2' : 'tWH, k=+2 (aMC@NLO + Herwig++)',
+    'tHW_plus2' : 'tHW, k=+2 (aMC@NLO + Herwig++)',
    'tHjb_plus2' : 'tHjb, k=+2 (MadGraph + Pythia8)',
-   'tWH_minus1' : 'tWH, k=-1 (aMC@NLO + Herwig++)',
+   'tHW_minus1' : 'tHW, k=-1 (aMC@NLO + Herwig++)',
   'tHjb_minus1' : 'tHjb, k=-1 (MadGraph + Pythia8)',
 }
 
@@ -22,24 +26,29 @@ procName = {
 # Cross Sections and Branching Ratios
 BR = 2.270E-03
 xsec = {          # [pb]
-         'ggH' : 4.852E+01,
-         'VBF' : 3.779E+00,
-         'WH'  : 1.369E+00,
-         'ZH'  : 8.824E-01,
+  #       'ggH' : 4.852E+01,
+  #       'VBF' : 3.779E+00,
+  #       'WH'  : 1.369E+00,
+  #       'ZH'  : 8.824E-01,
+  'ggH_NNLOPS' : 4.852E+01,
+   'VBF_NNPDF' : 3.779E+00,
+      'WH_NLO' : 1.369E+00,
+      'ZH_NLO' : 8.824E-01,
          'ttH' : 5.065E-01,
          'bbH' : 4.863E-01,
-         'tWH' : 2.500E-02,
+         'tHW' : 2.500E-02,
         'tHjb' : 7.425E-02,
-   'tWH_plus2' : 9.700E-02,
+   'tHW_plus2' : 9.700E-02,
   'tHjb_plus2' : 2.685E-01,
-  'tWH_minus1' : 1.504E-01,
+  'tHW_minus1' : 1.504E-01,
  'tHjb_minus1' : 7.320E-01,
 }
 binXS = []
 
 
-procs=['ggH','VBF','WH','ZH','ttH','bbH','tWH','tHjb','tWH_plus2','tHjb_plus2','tWH_minus1','tHjb_minus1']
-procs=['ggH','VBF','WH','ZH','ttH','bbH','tWH','tHjb']
+#procs=['ggH','VBF','WH','ZH','ttH','bbH','tHW','tHjb','tHW_plus2','tHjb_plus2','tHW_minus1','tHjb_minus1']
+#procs=['ggH','VBF','WH','ZH','ttH','bbH','tHW','tHjb']
+procs=['ggH_NNLOPS','VBF_NNPDF','WH_NLO','ZH_NLO','ttH','bbH','tHW','tHjb']
 histName = 'h_truthAcc_fineIndex_weightMC'
 
 def getSumHist( h ):
@@ -60,7 +69,7 @@ def getSumHist( h ):
 
 
 for proc in procs:
-  tf = TFile( 'output/Coupling_%s/hist-%s.root' % (proc,proc) )
+  tf = TFile( 'output/HGamPDF_%s/hist-%s.root' % (proc,proc) )
   hbin = tf.Get(histName)
   for ibin, binName in enumerate( FineIndexLabels ):
     hbin.GetXaxis().SetBinLabel( ibin+1, binName )

@@ -16,13 +16,13 @@ procs = ['ggH_NNLOPS','VBF_NNPDF','WH_NLO','ZH_NLO'] #ttH','bbH','tHW','tHjb']
 
 # -----------------------------------------------------------------------
 def fixPrecision( N ):
-  return float( '%.6f' % N )
+  return float( '%.4f' % N )
 
 
 # -----------------------------------------------------------------------
 def getDiff(nom, sys):
   if (nom==0): return 0.0
-  return abs(sys/nom - 1.0)
+  return (sys/nom - 1.0)
 
 
 # -----------------------------------------------------------------------
@@ -36,7 +36,7 @@ def formatCell(d, cat, sys):
     if form == 'logn':
       if float('%.2f'%(hi*100)) == 0.:
         return '---'
-      return '$\pm %.2f$' % (abs(hi*100))
+      return '%+.2f' % ((hi*100))
     return '${}^{%+.2f}_{%+.2f}$' % (hi*100, lo*100)
 
 
@@ -48,7 +48,7 @@ def pruneSysts( allSys ):
       for sysName in sysNames:
         pruneSys = False
         hi, lo, form = allSys[proc][cat][sysName]
-        allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form) ### Assume positive correlations
+        #allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form) ### Assume positive correlations
         if 'EG_' in sysName:
           pruneSys = True
         if (hi == 0. or lo == 0.):
@@ -56,10 +56,11 @@ def pruneSysts( allSys ):
         elif (abs(lo/hi) > 5 or abs(hi/lo) > 5):
           pruneSys = True
         elif lo*hi > 0:
-           # assume positive correlations when up/down have same trends
-           #  --> could also symmetrize with max?
-           #  --> many stat dominated systs, need a way to check this... (N RAW)
-          allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form)
+          # assume positive correlations when up/down have same trends
+          #  --> could also symmetrize with max?
+          #  --> many stat dominated systs, need a way to check this... (N RAW)
+          #allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form)
+          pass
         #elif (sysTOT - sysNM1 < 0.0001):
         #  pruneSys = True
         if pruneSys:
@@ -142,6 +143,8 @@ if __name__ == "__main__":
       table.append(line)
     log = open('tablesPDF/table_%s1.tex'%proc,'w+')
     print >> log, tabulate.tabulate( table, headers=headers, tablefmt='latex' )
+    #if 'ggH' in proc:
+    #  print tabulate.tabulate( table, headers=headers )
 
     table = []
     headers = ['Systematic'] + [ i+1 for i in xrange(17,len(HG.CatLabels)+1) ]

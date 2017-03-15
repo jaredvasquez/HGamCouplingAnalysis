@@ -150,19 +150,19 @@ EL::StatusCode CouplingAnalysis::createOutput()
     }
 
     if (m_isGGH) {
-      histoStore()->createTH2F( "h2_catSTXS_QCDmu",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_QCDqm",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_QCDres",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_QCDpTH",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_QCDmig01", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_QCDmig12", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDmu",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDqm",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDres",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDpTH",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDmig01", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
+      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDmig12", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
       
-      histoStore()->createTH2F( "h2_fineIndex_QCDmu",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_QCDqm",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_QCDres",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_QCDpTH",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_QCDmig01", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_QCDmig12", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDmu",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDqm",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDres",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDpTH",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDmig01", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDmig12", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
     }
   }
 
@@ -235,6 +235,36 @@ EL::StatusCode CouplingAnalysis::execute()
   if ( isMC() && not var::isDalitzEvent() ) {
     histoStore()->fillTH1F( "h_initialEvents_noDalitz_weighted_pTRW", 1.0, weightInitial() * w_pT );
     histoStore()->fillTH1F( "h_initialEvents_noDalitz_weighted",      1.0, weightInitial() );
+  }
+
+  // PDF, alpha_S, and ggH QCD uncertainties
+  if (isMC() && m_usePDFUncerts) {
+    xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
+    m_category = 0;
+
+    double wASHI = w * higgsWeights.alphaS_up / higgsWeights.nominal;
+    double wASLO = w * higgsWeights.alphaS_dn / higgsWeights.nominal;
+
+    if (!std::isfinite(wASHI)) wASHI = w;
+    if (!std::isfinite(wASLO)) wASLO = w;
+
+    histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
+    histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASHI );
+
+    histoStore()->fillTH2F( "h2_catSTXS_alphaS_up",   m_category, STXSbin, wASHI );
+    histoStore()->fillTH2F( "h2_catSTXS_alphaS_dn",   m_category, STXSbin, wASHI );
+
+    histoStore()->fillTH2F( "h2_fineIndex_alphaS_up", m_category, fineIndex, wASHI );
+    histoStore()->fillTH2F( "h2_fineIndex_alphaS_dn", m_category, fineIndex, wASHI );
+
+    for (int ipdf(0); ipdf < 30; ipdf++)  {
+      double wPDF = w * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
+      if (!std::isfinite(wPDF)) wPDF = w;
+      TString suffixPDF = TString::Format("_PDF%d",ipdf);
+      histoStore()->fillTH1F(  "h_catSTXS"+suffixPDF,   m_category, wPDF );
+      histoStore()->fillTH2F( "h2_catSTXS"+suffixPDF,   m_category, STXSbin, wPDF );
+      histoStore()->fillTH2F( "h2_fineIndex"+suffixPDF, m_category, fineIndex, wPDF );
+    }
   }
 
   // Loop over systematic variations
