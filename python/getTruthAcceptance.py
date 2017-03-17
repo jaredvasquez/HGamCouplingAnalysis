@@ -16,10 +16,10 @@ procName = {
           'tHW' : 'tHW (aMC@NLO + Herwig++)',
          'tHjb' : 'tHjb (MadGraph + Pythia8)',
 # tH samples
-    'tHW_plus2' : 'tHW, k=+2 (aMC@NLO + Herwig++)',
-   'tHjb_plus2' : 'tHjb, k=+2 (MadGraph + Pythia8)',
-   'tHW_minus1' : 'tHW, k=-1 (aMC@NLO + Herwig++)',
-  'tHjb_minus1' : 'tHjb, k=-1 (MadGraph + Pythia8)',
+#    'tHW_plus2' : 'tHW, k=+2 (aMC@NLO + Herwig++)',
+#   'tHjb_plus2' : 'tHjb, k=+2 (MadGraph + Pythia8)',
+#   'tHW_minus1' : 'tHW, k=-1 (aMC@NLO + Herwig++)',
+#  'tHjb_minus1' : 'tHjb, k=-1 (MadGraph + Pythia8)',
 }
 
 
