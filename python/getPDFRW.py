@@ -16,7 +16,7 @@ def fixPrecision( N ):
 # -----------------------------------------------------------------------
 def getDiff(nom, sys):
   if (nom==0): return 0.0
-  return abs(sys/nom - 1.0)
+  return (sys/nom - 1.0)
 
 
 # -----------------------------------------------------------------------
@@ -27,7 +27,7 @@ def pruneSysts( allSys ):
       for sysName in sysNames:
         pruneSys = False
         hi, lo, form = allSys[proc][cat][sysName]
-        allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form) ### Assume positive correlations
+        #allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form) ### Assume positive correlations
         if 'EG_' in sysName:
           pruneSys = True
         if (hi == 0. or lo == 0.):
@@ -38,7 +38,8 @@ def pruneSysts( allSys ):
            # assume positive correlations when up/down have same trends
            #  --> could also symmetrize with max?
            #  --> many stat dominated systs, need a way to check this... (N RAW)
-          allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form)
+          #allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form)
+          pass
         #elif (sysTOT - sysNM1 < 0.0001):
         #  pruneSys = True
         if pruneSys:
