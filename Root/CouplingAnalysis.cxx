@@ -294,7 +294,8 @@ EL::StatusCode CouplingAnalysis::execute()
     
     //m_category = var::catCoup_Moriond2017();
     m_category = var::catCoup_Moriond2017BDT();
-    if (m_category > 23) m_category--;
+    if      (m_category > 19) m_category -= 1;
+    else if (m_category > 23) m_category -= 2;
 
     histoStore()->fillTH1F(  "h_catSTXS"+suffix,   m_category, w );
     histoStore()->fillTH2F( "h2_catSTXS"+suffix,   m_category, STXSbin, w );

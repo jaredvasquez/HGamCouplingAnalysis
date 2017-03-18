@@ -1,88 +1,73 @@
-//  ggH (Powheg + Pythia8), without pTH rweighting
+
+//  ggH (NNLOPS)
 ------------------------------------------------------------
-                          gg2H_fwdH : 0.0933 +/- 0.0002
-              gg2H_VBFtopo_jet3veto : 0.0062 +/- 0.0001
-                  gg2H_VBFtopo_jet3 : 0.0068 +/- 0.0001
-                            gg2H_0J : 0.5228 +/- 0.0004
-                   gg2H_1J_ptH_0_60 : 0.1500 +/- 0.0003
-                 gg2H_1J_ptH_60_120 : 0.1088 +/- 0.0002
-                gg2H_1J_ptH_120_200 : 0.0193 +/- 0.0001
-                  gg2H_1J_ptH_gt200 : 0.0044 +/- 0.0000
-                 gg2H_ge2J_ptH_0_60 : 0.0161 +/- 0.0001
-               gg2H_ge2J_ptH_60_120 : 0.0398 +/- 0.0001
-              gg2H_ge2J_ptH_120_200 : 0.0214 +/- 0.0001
-                gg2H_ge2J_ptH_gt200 : 0.0112 +/- 0.0001
+                          gg2H_fwdH : 0.0880 +/- 0.0002
+              gg2H_VBFtopo_jet3veto : 0.0056 +/- 0.0000
+                  gg2H_VBFtopo_jet3 : 0.0074 +/- 0.0001
+                            gg2H_0J : 0.5615 +/- 0.0004
+                   gg2H_1J_ptH_0_60 : 0.1338 +/- 0.0002
+                 gg2H_1J_ptH_60_120 : 0.0927 +/- 0.0002
+                gg2H_1J_ptH_120_200 : 0.0153 +/- 0.0001
+                  gg2H_1J_ptH_gt200 : 0.0031 +/- 0.0000
+                 gg2H_ge2J_ptH_0_60 : 0.0251 +/- 0.0001
+               gg2H_ge2J_ptH_60_120 : 0.0384 +/- 0.0001
+              gg2H_ge2J_ptH_120_200 : 0.0203 +/- 0.0001
+                gg2H_ge2J_ptH_gt200 : 0.0087 +/- 0.0001
 
-[?1034h
-//  ggH (Powheg + Pythia8), with pTH rweighting
+
+//  VBF (Powheg + Pythia8, NNPDF)
 ------------------------------------------------------------
-                          gg2H_fwdH : 0.0946 +/- 0.0002
-              gg2H_VBFtopo_jet3veto : 0.0062 +/- 0.0001
-                  gg2H_VBFtopo_jet3 : 0.0068 +/- 0.0001
-                            gg2H_0J : 0.5589 +/- 0.0004
-                   gg2H_1J_ptH_0_60 : 0.1425 +/- 0.0002
-                 gg2H_1J_ptH_60_120 : 0.0875 +/- 0.0002
-                gg2H_1J_ptH_120_200 : 0.0124 +/- 0.0001
-                  gg2H_1J_ptH_gt200 : 0.0028 +/- 0.0000
-                 gg2H_ge2J_ptH_0_60 : 0.0161 +/- 0.0001
-               gg2H_ge2J_ptH_60_120 : 0.0398 +/- 0.0001
-              gg2H_ge2J_ptH_120_200 : 0.0213 +/- 0.0001
-                gg2H_ge2J_ptH_gt200 : 0.0112 +/- 0.0001
+                    VBF_qq2Hqq_fwdH : 0.0697 +/- 0.0002
+        VBF_qq2Hqq_VBFtopo_jet3veto : 0.2342 +/- 0.0003
+            VBF_qq2Hqq_VBFtopo_jet3 : 0.0736 +/- 0.0002
+                  VBF_qq2Hqq_VH2jet : 0.0233 +/- 0.0001
+                    VBF_qq2Hqq_rest : 0.5566 +/- 0.0004
+            VBF_qq2Hqq_pTjet1_gt200 : 0.0425 +/- 0.0002
 
 
-//  VBF (Powheg + Pythia8)
+//  WH (Powheg + Pythia8)
 ------------------------------------------------------------
-                    qq2Hqq_VBF_fwdH : 0.0679 +/- 0.0003
-        qq2Hqq_VBF_VBFtopo_jet3veto : 0.2331 +/- 0.0004
-            qq2Hqq_VBF_VBFtopo_jet3 : 0.0728 +/- 0.0003
-                  qq2Hqq_VBF_VH2jet : 0.0228 +/- 0.0002
-                    qq2Hqq_VBF_rest : 0.5610 +/- 0.0005
-            qq2Hqq_VBF_pTjet1_gt200 : 0.0424 +/- 0.0002
+                     WH_qq2Hqq_fwdH : 0.0813 +/- 0.0004
+         WH_qq2Hqq_VBFtopo_jet3veto : 0.0018 +/- 0.0001
+             WH_qq2Hqq_VBFtopo_jet3 : 0.0069 +/- 0.0001
+                   WH_qq2Hqq_VH2jet : 0.1892 +/- 0.0006
+                     WH_qq2Hqq_rest : 0.3677 +/- 0.0007
+             WH_qq2Hqq_pTjet1_gt200 : 0.0274 +/- 0.0002
+                       qq2Hlnu_fwdH : 0.0394 +/- 0.0003
+                  qq2Hlnu_pTV_0_150 : 0.2463 +/- 0.0006
+             qq2Hlnu_pTV_150_250_0J : 0.0163 +/- 0.0002
+           qq2Hlnu_pTV_150_250_ge1J : 0.0139 +/- 0.0002
+                  qq2Hlnu_pTV_gt250 : 0.0098 +/- 0.0001
 
 
-//  WH (Pythia8)
+//  ZH (Powheg + Pythia8)
 ------------------------------------------------------------
-                     qq2Hqq_WH_fwdH : 0.0872 +/- 0.0006
-         qq2Hqq_WH_VBFtopo_jet3veto : 0.0013 +/- 0.0001
-             qq2Hqq_WH_VBFtopo_jet3 : 0.0042 +/- 0.0001
-                   qq2Hqq_WH_VH2jet : 0.1969 +/- 0.0008
-                     qq2Hqq_WH_rest : 0.3620 +/- 0.0010
-             qq2Hqq_WH_pTjet1_gt200 : 0.0232 +/- 0.0003
-                       qq2Hlnu_fwdH : 0.0423 +/- 0.0004
-                  qq2Hlnu_pTV_0_150 : 0.2435 +/- 0.0009
-             qq2Hlnu_pTV_150_250_0J : 0.0170 +/- 0.0003
-           qq2Hlnu_pTV_150_250_ge1J : 0.0130 +/- 0.0002
-                  qq2Hlnu_pTV_gt250 : 0.0094 +/- 0.0002
-
-
-//  ZH (Pythia8)
-------------------------------------------------------------
-                     qq2Hqq_ZH_fwdH : 0.0820 +/- 0.0006
-         qq2Hqq_ZH_VBFtopo_jet3veto : 0.0014 +/- 0.0001
-             qq2Hqq_ZH_VBFtopo_jet3 : 0.0049 +/- 0.0001
-                   qq2Hqq_ZH_VH2jet : 0.2330 +/- 0.0009
-                     qq2Hqq_ZH_rest : 0.3526 +/- 0.0010
-             qq2Hqq_ZH_pTjet1_gt200 : 0.0243 +/- 0.0003
-                        qq2Hll_fwdH : 0.0358 +/- 0.0004
-                   qq2Hll_pTV_0_150 : 0.2293 +/- 0.0008
-              qq2Hll_pTV_150_250_0J : 0.0162 +/- 0.0003
-            qq2Hll_pTV_150_250_ge1J : 0.0120 +/- 0.0002
-                   qq2Hll_pTV_gt250 : 0.0086 +/- 0.0002
+                     ZH_qq2Hqq_fwdH : 0.0766 +/- 0.0004
+         ZH_qq2Hqq_VBFtopo_jet3veto : 0.0018 +/- 0.0001
+             ZH_qq2Hqq_VBFtopo_jet3 : 0.0076 +/- 0.0001
+                   ZH_qq2Hqq_VH2jet : 0.2238 +/- 0.0006
+                     ZH_qq2Hqq_rest : 0.3630 +/- 0.0007
+             ZH_qq2Hqq_pTjet1_gt200 : 0.0288 +/- 0.0003
+                        qq2Hll_fwdH : 0.0329 +/- 0.0003
+                   qq2Hll_pTV_0_150 : 0.2276 +/- 0.0006
+              qq2Hll_pTV_150_250_0J : 0.0160 +/- 0.0002
+            qq2Hll_pTV_150_250_ge1J : 0.0130 +/- 0.0002
+                   qq2Hll_pTV_gt250 : 0.0089 +/- 0.0001
 
 
 //  ttH (aMC@NLO + Pythia8)
 ------------------------------------------------------------
-                           ttH_fwdH : 0.0131 +/- 0.0002
-                                ttH : 0.9869 +/- 0.0002
+                           ttH_fwdH : 0.0132 +/- 0.0002
+                                ttH : 0.9868 +/- 0.0002
 
 
 //  bbH (aMC@NLO + Pythia8)
 ------------------------------------------------------------
-                           bbH_fwdH : 0.0569 +/- 0.0038
-                                bbH : 0.9431 +/- 0.0038
+                           bbH_fwdH : 0.0570 +/- 0.0038
+                                bbH : 0.9430 +/- 0.0038
 
 
-//  tWH (aMC@NLO + Herwig++)
+//  tHW (aMC@NLO + Herwig++)
 ------------------------------------------------------------
                            tHW_fwdH : 0.0109 +/- 0.0007
                                 tHW : 0.9891 +/- 0.0007
@@ -94,26 +79,55 @@
                                tHqb : 0.9207 +/- 0.0009
 
 
-//  tWH, k=+2 (aMC@NLO + Herwig++)
-------------------------------------------------------------
-                           tHW_fwdH : 0.0129 +/- 0.0009
-                                tHW : 0.9871 +/- 0.0009
 
 
-//  tHjb, k=+2 (MadGraph + Pythia8)
-------------------------------------------------------------
-                          tHqb_fwdH : 0.0252 +/- 0.0005
-                               tHqb : 0.9748 +/- 0.0005
-
-
-//  tWH, k=-1 (aMC@NLO + Herwig++)
-------------------------------------------------------------
-                           tHW_fwdH : 0.0157 +/- 0.0011
-                                tHW : 0.9843 +/- 0.0011
-
-
-//  tHjb, k=-1 (MadGraph + Pythia8)
-------------------------------------------------------------
-                          tHqb_fwdH : 0.0259 +/- 0.0005
-                               tHqb : 0.9741 +/- 0.0005
-
+   STXS Cross-Sections [fb]
+---------------------------------------------
+                   'gg2H_fwdH' : 9.696E+00,
+       'gg2H_VBFtopo_jet3veto' : 6.150E-01,
+           'gg2H_VBFtopo_jet3' : 8.190E-01,
+                     'gg2H_0J' : 6.184E+01,
+            'gg2H_1J_ptH_0_60' : 1.474E+01,
+          'gg2H_1J_ptH_60_120' : 1.021E+01,
+         'gg2H_1J_ptH_120_200' : 1.681E+00,
+           'gg2H_1J_ptH_gt200' : 3.407E-01,
+          'gg2H_ge2J_ptH_0_60' : 2.770E+00,
+        'gg2H_ge2J_ptH_60_120' : 4.234E+00,
+       'gg2H_ge2J_ptH_120_200' : 2.238E+00,
+         'gg2H_ge2J_ptH_gt200' : 9.561E-01,
+             'VBF_qq2Hqq_fwdH' : 5.981E-01,
+ 'VBF_qq2Hqq_VBFtopo_jet3veto' : 2.009E+00,
+     'VBF_qq2Hqq_VBFtopo_jet3' : 6.315E-01,
+           'VBF_qq2Hqq_VH2jet' : 2.002E-01,
+             'VBF_qq2Hqq_rest' : 4.775E+00,
+     'VBF_qq2Hqq_pTjet1_gt200' : 3.648E-01,
+              'WH_qq2Hqq_fwdH' : 2.526E-01,
+  'WH_qq2Hqq_VBFtopo_jet3veto' : 5.549E-03,
+      'WH_qq2Hqq_VBFtopo_jet3' : 2.133E-02,
+            'WH_qq2Hqq_VH2jet' : 5.879E-01,
+              'WH_qq2Hqq_rest' : 1.143E+00,
+      'WH_qq2Hqq_pTjet1_gt200' : 8.528E-02,
+                'qq2Hlnu_fwdH' : 1.223E-01,
+           'qq2Hlnu_pTV_0_150' : 7.655E-01,
+      'qq2Hlnu_pTV_150_250_0J' : 5.059E-02,
+    'qq2Hlnu_pTV_150_250_ge1J' : 4.334E-02,
+           'qq2Hlnu_pTV_gt250' : 3.042E-02,
+              'ZH_qq2Hqq_fwdH' : 1.534E-01,
+  'ZH_qq2Hqq_VBFtopo_jet3veto' : 3.686E-03,
+      'ZH_qq2Hqq_VBFtopo_jet3' : 1.525E-02,
+            'ZH_qq2Hqq_VH2jet' : 4.482E-01,
+              'ZH_qq2Hqq_rest' : 7.272E-01,
+      'ZH_qq2Hqq_pTjet1_gt200' : 5.776E-02,
+                 'qq2Hll_fwdH' : 6.595E-02,
+            'qq2Hll_pTV_0_150' : 4.559E-01,
+       'qq2Hll_pTV_150_250_0J' : 3.196E-02,
+     'qq2Hll_pTV_150_250_ge1J' : 2.601E-02,
+            'qq2Hll_pTV_gt250' : 1.778E-02,
+                    'ttH_fwdH' : 1.513E-02,
+                         'ttH' : 1.135E+00,
+                    'bbH_fwdH' : 6.297E-02,
+                         'bbH' : 1.041E+00,
+                    'tHW_fwdH' : 6.191E-04,
+                         'tHW' : 5.613E-02,
+                   'tHqb_fwdH' : 1.337E-02,
+                        'tHqb' : 1.552E-01,

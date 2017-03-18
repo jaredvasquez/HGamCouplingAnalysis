@@ -3,7 +3,8 @@ import prettyplots
 import HGamMoriondCatsBDT as HG
 
 gStyle.SetOptStat(0)
-prettyplots.setPalette("rainbow")
+#prettyplots.setPalette("rainbow")
+prettyplots.setPalette("sequentialGB")
 
 Stage1_Labels = ["UNKNOWN","GG2H_FWDH","GG2H_VBFTOPO_JET3VETO","GG2H_VBFTOPO_JET3","GG2H_0J","GG2H_1J_PTH_0_60","GG2H_1J_PTH_60_120","GG2H_1J_PTH_120_200","GG2H_1J_PTH_GT200","GG2H_GE2J_PTH_0_60","GG2H_GE2J_PTH_60_120","GG2H_GE2J_PTH_120_200","GG2H_GE2J_PTH_GT200","VBF_QQ2HQQ_FWDH","QQ2HQQ_VBFTOPO_JET3VETO","QQ2HQQ_VBFTOPO_JET3","QQ2HQQ_VH2JET","QQ2HQQ_REST","QQ2HQQ_PTJET1_GT200","QQ2HLNU_FWDH","QQ2HLNU_PTV_0_150","QQ2HLNU_PTV_150_250_0J","QQ2HLNU_PTV_150_250_GE1J","QQ2HLNU_PTV_GT250","QQ2HLL_FWDH","QQ2HLL_PTV_0_150","QQ2HLL_PTV_150_250_0J","QQ2HLL_PTV_150_250_GE1J","QQ2HLL_PTV_GT250","GG2HLL_FWDH","GG2HLL_PTV_0_150","GG2HLL_PTV_GT150_0J","GG2HLL_PTV_GT150_GE1J","TTH_FWDH","TTH","BBH_FWDH","BBH","THJB_FWDH","THJB","TWH_FWDH","TWH"]
 
@@ -104,8 +105,8 @@ hpur.Draw("AXIS SAME")
 paves = {}
 paves['ggH'] = TPave(  1,  0, 11,  9)
 paves['qqH'] = TPave( 11,  9, 18, 16)
-paves[ 'VH'] = TPave( 18, 16, 25, 24)
-paves['ttH'] = TPave( 25, 24, 34, 27)
+paves[ 'VH'] = TPave( 18, 16, 24, 24)
+paves['ttH'] = TPave( 24, 24, 33, 27)
 for group in paves:
   pave = paves[group]
   pave.SetBorderSize(1)
