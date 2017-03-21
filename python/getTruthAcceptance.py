@@ -33,7 +33,8 @@ xsec = {          # [pb]
   'ggH_NNLOPS' : 4.852E+01,
    'VBF_NNPDF' : 3.779E+00,
       'WH_NLO' : 1.369E+00,
-      'ZH_NLO' : 8.824E-01,
+      'ZH_NLO' : 7.591E-01,
+        #'ggZH' : 1.233E-01,
          'ttH' : 5.065E-01,
          'bbH' : 4.863E-01,
          'tHW' : 2.500E-02,
@@ -98,4 +99,5 @@ if dups: print 'Uh oh! Duplicates of bins:', dups
 print '   STXS Cross-Sections [fb]'
 print '-'*45
 for binName, XS in binXS:
-  print '%30s : %8.3E,' % ('\'%s\'' % binName, XS)
+  print '    %s : %8.3E' % ('%s' % binName, XS*0.001)
+  #print '%30s : %8.3E,' % ('\'%s\'' % binName, XS)

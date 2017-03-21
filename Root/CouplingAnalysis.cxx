@@ -78,7 +78,7 @@ EL::StatusCode CouplingAnalysis::createOutput()
   }
 
   // Create Histograms
-  int nCats(33), nBins(42), nIndex(53);
+  int nCats(31), nBins(42), nIndex(53);
 
   histoStore()->createTH1F( "h_truthAcc_fineIndex_weightMC", nIndex, -0.5, nIndex-0.5 );
   histoStore()->createTH1F( "h_truthAcc_fineIndex_weight", nIndex, -0.5, nIndex-0.5 );
@@ -243,14 +243,14 @@ EL::StatusCode CouplingAnalysis::execute()
   // PDF, alpha_S, and ggH QCD uncertainties
   if (isMC() && m_usePDFUncerts) {
     xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
-    m_category = 0;
+    m_category = -999;
 
     double wASHI = w * higgsWeights.alphaS_up / higgsWeights.nominal;
     double wASLO = w * higgsWeights.alphaS_dn / higgsWeights.nominal;
 
     if (!std::isfinite(wASHI)) wASHI = w;
     if (!std::isfinite(wASLO)) wASLO = w;
-
+    
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASHI );
 
