@@ -251,6 +251,8 @@ EL::StatusCode CouplingAnalysis::execute()
     if (!std::isfinite(wASHI)) wASHI = w;
     if (!std::isfinite(wASLO)) wASLO = w;
     
+    histoStore()->fillTH1F(  "h_catSTXS",   m_category, w );
+
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASHI );
 
@@ -319,13 +321,13 @@ EL::StatusCode CouplingAnalysis::execute()
         if (!std::isfinite(wASLO)) wASLO = w;
 
         histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
-        histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASHI );
+        histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASLO );
 
         histoStore()->fillTH2F( "h2_catSTXS_alphaS_up",   m_category, STXSbin, wASHI );
-        histoStore()->fillTH2F( "h2_catSTXS_alphaS_dn",   m_category, STXSbin, wASHI );
+        histoStore()->fillTH2F( "h2_catSTXS_alphaS_dn",   m_category, STXSbin, wASLO );
 
         histoStore()->fillTH2F( "h2_fineIndex_alphaS_up", m_category, fineIndex, wASHI );
-        histoStore()->fillTH2F( "h2_fineIndex_alphaS_dn", m_category, fineIndex, wASHI );
+        histoStore()->fillTH2F( "h2_fineIndex_alphaS_dn", m_category, fineIndex, wASLO );
 
         for (int ipdf(0); ipdf < 30; ipdf++)  {
           double wPDF = w * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;

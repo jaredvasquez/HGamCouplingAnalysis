@@ -72,21 +72,21 @@ def pruneSysts( allSys ):
 def getSys():
   sysMap = { p: { cat : {} for cat in HG.CatLabels } for p in procs }
   for proc in procs:
-    tf = ROOT.TFile('output/HGamCoupling_{0}/hist-{0}.root'.format(proc))
+    tf = ROOT.TFile('output/HGamPDF_{0}/hist-{0}.root'.format(proc))
     hnom = tf.Get('h_catSTXS')
     for ipdf in xrange(nSys):
       hsys = tf.Get('h_catSTXS_PDF{}'.format(ipdf))
       for icat, cat in enumerate(HG.CatLabels):
-        nom = hnom.GetBinContent(icat+1) #/ hnom.GetBinContent(0)
-        sys = hsys.GetBinContent(icat+1) #/ hsys.GetBinContent(0)
+        nom = hnom.GetBinContent(icat+1) / hnom.GetBinContent(0)
+        sys = hsys.GetBinContent(icat+1) / hsys.GetBinContent(0)
         err = fixPrecision( getDiff(nom, sys) )
         sysMap[proc][cat][NPnames[ipdf]] = [ err, err, 'logn' ]
 
     for suffix in [ '_alphaS_up', '_alphaS_dn']:
       hsys = tf.Get('h_catSTXS'+suffix)
       for icat, cat in enumerate(HG.CatLabels):
-        nom = hnom.GetBinContent(icat+1) #/ hnom.GetBinContent(0)
-        sys = hsys.GetBinContent(icat+1) #/ hsys.GetBinContent(0)
+        nom = hnom.GetBinContent(icat+1) / hnom.GetBinContent(0)
+        sys = hsys.GetBinContent(icat+1) / hsys.GetBinContent(0)
         err = fixPrecision( getDiff(nom, sys) )
         sysMap[proc][cat]['ATLAS_PDF4LHC_NLO_30'+suffix] = [ err, err, 'logn' ]
 
@@ -111,8 +111,8 @@ if __name__ == "__main__":
   sysAll.update( json.load(open('pdfSysRW.json')) )
   #sysAll = json.load(open('pdfSysRW.json'))
 
-  sysMap = sysAll
-  #sysMap = pruneSysts(sysAll)
+  #sysMap = sysAll
+  sysMap = pruneSysts(sysAll)
   json.dump(sysMap, open('pdfSys.json','wb'))
 
   uniqNPs = set()
@@ -155,8 +155,9 @@ if __name__ == "__main__":
     print >> log, tabulate.tabulate( table, headers=headers, tablefmt='latex' )
 
   import sys
-  sys.exit()
-  for proc in procs:
+  #sys.exit()
+  print '\n\n'
+  for proc in sysMap:
     cat = 'GGH_0J_CEN'
     print proc
     for NP in sorted(sysMap[proc][cat]):
