@@ -195,8 +195,10 @@ EL::StatusCode CouplingAnalysis::execute()
   // get correction factor for N_init with pT reweighting
   double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.003 : 1.0;
   
-  double wMC = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight() * lumiXsecWeight();
-  double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
+  double wInit = (isData()) ? 1.0 : w_pT * weightInitial() * lumiXsecWeight();
+  double wMC   = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight() * lumiXsecWeight();
+  double w     = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
+  std::cout << w/wMC << std::endl;
 
   if (isMC() && fabs(eventHandler()->mcWeight()) > 150) {
     wMC = w_pT * lumiXsecWeight() * 150 * wMC / fabs(wMC);
@@ -224,10 +226,10 @@ EL::StatusCode CouplingAnalysis::execute()
   if (m_isTWH && STXSbin > 0) STXSbin += 2;
 
   histoStore()->fillTH1F( "h_truthAcc_fineIndex_weightMC", fineIndex, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_fineIndex_weight", fineIndex, w );
+  histoStore()->fillTH1F( "h_truthAcc_fineIndex_weight", fineIndex, wInit );
 
   histoStore()->fillTH1F( "h_truthAcc_weightMC", STXSbin, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_weight", STXSbin, w );
+  histoStore()->fillTH1F( "h_truthAcc_weight", STXSbin, wInit );
 
   // Create histos for weighting
   if ( isMC() ) {
@@ -251,9 +253,9 @@ EL::StatusCode CouplingAnalysis::execute()
     if (!std::isfinite(wASHI)) wASHI = w;
     if (!std::isfinite(wASLO)) wASLO = w;
     
-    histoStore()->fillTH1F(  "h_catSTXS",   m_category, w );
-    histoStore()->fillTH2F( "h2_catSTXS",   m_category, STXSbin,   w );
-    histoStore()->fillTH2F( "h2_fineIndex", m_category, fineIndex, w );
+    histoStore()->fillTH1F(  "h_catSTXS",   m_category, wInit );
+    histoStore()->fillTH2F( "h2_catSTXS",   m_category, STXSbin,   wInit );
+    histoStore()->fillTH2F( "h2_fineIndex", m_category, fineIndex, wInit );
 
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASLO );
@@ -265,8 +267,8 @@ EL::StatusCode CouplingAnalysis::execute()
     histoStore()->fillTH2F( "h2_fineIndex_alphaS_dn", m_category, fineIndex, wASLO );
 
     for (int ipdf(0); ipdf < 30; ipdf++)  {
-      double wPDF = w * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
-      if (!std::isfinite(wPDF)) wPDF = w;
+      double wPDF = wInit * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
+      if (!std::isfinite(wPDF)) wPDF = wInit;
       TString suffixPDF = TString::Format("_PDF%d",ipdf);
       histoStore()->fillTH1F(  "h_catSTXS"+suffixPDF,   m_category, wPDF );
       histoStore()->fillTH2F( "h2_catSTXS"+suffixPDF,   m_category, STXSbin, wPDF );
