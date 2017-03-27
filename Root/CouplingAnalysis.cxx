@@ -183,7 +183,7 @@ EL::StatusCode CouplingAnalysis::execute()
   HgammaAnalysis::execute();
 
   // Blind the data
-  //if (isData() && var::m_yy() >= 120*HG::GeV && var::m_yy() < 130*HG::GeV) return EL::StatusCode::SUCCESS;
+  if (isData() && var::m_yy() >= 120*HG::GeV && var::m_yy() < 130*HG::GeV) return EL::StatusCode::SUCCESS;
 
   
   // Apply Higgs pT reweighting
