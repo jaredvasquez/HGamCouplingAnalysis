@@ -193,7 +193,7 @@ EL::StatusCode CouplingAnalysis::execute()
   }
 
   // get correction factor for N_init with pT reweighting
-  double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.0 : 1.003;
+  double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.003 : 1.0;
   
   double wMC = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight() * lumiXsecWeight();
   double w  = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
