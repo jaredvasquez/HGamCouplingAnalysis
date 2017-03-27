@@ -252,6 +252,8 @@ EL::StatusCode CouplingAnalysis::execute()
     if (!std::isfinite(wASLO)) wASLO = w;
     
     histoStore()->fillTH1F(  "h_catSTXS",   m_category, w );
+    histoStore()->fillTH2F( "h2_catSTXS",   m_category, STXSbin,   w );
+    histoStore()->fillTH2F( "h2_fineIndex", m_category, fineIndex, w );
 
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASLO );
