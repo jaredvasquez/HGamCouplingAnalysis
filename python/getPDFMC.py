@@ -59,8 +59,7 @@ def pruneSysts( allSys ):
           # assume positive correlations when up/down have same trends
           #  --> could also symmetrize with max?
           #  --> many stat dominated systs, need a way to check this... (N RAW)
-          #allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form)
-          pass
+          allSys[proc][cat][sysName] = ( hi, -1.0*lo, form)
         #elif (sysTOT - sysNM1 < 0.0001):
         #  pruneSys = True
         if pruneSys:
@@ -158,8 +157,11 @@ if __name__ == "__main__":
   #sys.exit()
   print '\n\n'
   for proc in sysMap:
-    cat = 'GGH_0J_CEN'
+    cat = 'GGH_0J_FWD'
     print proc
     for NP in sorted(sysMap[proc][cat]):
       print '  -->', NP, ':', sysMap[proc][cat][NP]
 
+
+  #for icat, cat in enumerate(HG.CatLabels):
+  #  print icat+1, cat

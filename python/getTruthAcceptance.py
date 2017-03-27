@@ -37,7 +37,7 @@ xsec = {          # [pb]
         #'ggZH' : 1.233E-01,
          'ttH' : 5.065E-01,
          'bbH' : 4.863E-01,
-         'tHW' : 2.500E-02,
+         'tHW' : 1.517E-02,
         'tHjb' : 7.425E-02,
    'tHW_plus2' : 9.700E-02,
   'tHjb_plus2' : 2.685E-01,
@@ -47,8 +47,6 @@ xsec = {          # [pb]
 binXS = []
 
 
-#procs=['ggH','VBF','WH','ZH','ttH','bbH','tHW','tHjb','tHW_plus2','tHjb_plus2','tHW_minus1','tHjb_minus1']
-#procs=['ggH','VBF','WH','ZH','ttH','bbH','tHW','tHjb']
 procs=['ggH_NNLOPS','VBF_NNPDF','WH_NLO','ZH_NLO','ttH','bbH','tHW','tHjb']
 histName = 'h_truthAcc_fineIndex_weightMC'
 
@@ -99,5 +97,5 @@ if dups: print 'Uh oh! Duplicates of bins:', dups
 print '   STXS Cross-Sections [fb]'
 print '-'*45
 for binName, XS in binXS:
-  print '    %s : %8.3E' % ('%s' % binName, XS*0.001)
-  #print '%30s : %8.3E,' % ('\'%s\'' % binName, XS)
+  #print '    %s : %8.3E' % ('%s' % binName, XS*0.001)
+  print '%30s : %8.3E,' % ('\'%s\'' % binName, XS)
