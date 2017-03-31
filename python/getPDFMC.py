@@ -48,9 +48,10 @@ def pruneSysts( allSys ):
       for sysName in sysNames:
         pruneSys = False
         hi, lo, form = allSys[proc][cat][sysName]
+        hi = float('%.3f' % hi)
+        lo = float('%.3f' % lo)
+        allSys[proc][cat][sysName] = ( hi, lo, form )
         #allSys[proc][cat][sysName] = (abs(hi), -1.0*abs(lo), form) ### Assume positive correlations
-        if 'EG_' in sysName:
-          pruneSys = True
         if (hi == 0. or lo == 0.):
           pruneSys = True
         elif (abs(lo/hi) > 5 or abs(hi/lo) > 5):
@@ -157,7 +158,7 @@ if __name__ == "__main__":
   #sys.exit()
   print '\n\n'
   for proc in sysMap:
-    cat = 'GGH_0J_FWD'
+    cat = 'GGH_0J_CEN'
     print proc
     for NP in sorted(sysMap[proc][cat]):
       print '  -->', NP, ':', sysMap[proc][cat][NP]

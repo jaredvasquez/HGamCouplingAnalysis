@@ -15,6 +15,7 @@ procName = {
           'bbH' : 'bbH (aMC@NLO + Pythia8)',
           'tHW' : 'tHW (aMC@NLO + Herwig++)',
          'tHjb' : 'tHjb (MadGraph + Pythia8)',
+         'ggZH' : 'ggZH (Powheg + Pythia8)',
 # tH samples
 #    'tHW_plus2' : 'tHW, k=+2 (aMC@NLO + Herwig++)',
 #   'tHjb_plus2' : 'tHjb, k=+2 (MadGraph + Pythia8)',
@@ -34,7 +35,7 @@ xsec = {          # [pb]
    'VBF_NNPDF' : 3.779E+00,
       'WH_NLO' : 1.369E+00,
       'ZH_NLO' : 7.591E-01,
-        #'ggZH' : 1.233E-01,
+        'ggZH' : 1.233E-01,
          'ttH' : 5.065E-01,
          'bbH' : 4.863E-01,
          'tHW' : 1.517E-02,
@@ -47,7 +48,7 @@ xsec = {          # [pb]
 binXS = []
 
 
-procs=['ggH_NNLOPS','VBF_NNPDF','WH_NLO','ZH_NLO','ttH','bbH','tHW','tHjb']
+procs=['ggH_NNLOPS','VBF_NNPDF','WH_NLO','ZH_NLO','ttH','bbH','tHW','tHjb','ggZH']
 histName = 'h_truthAcc_fineIndex_weightMC'
 
 def getSumHist( h ):
@@ -81,6 +82,7 @@ for proc in procs:
   print '-'*60
   for ibin, binName in enumerate( FineIndexLabels ):
     if (ibin < 1): continue
+    if (('ggZH' in proc) and (ibin < 15)): continue # omit gg->ZH->had
     acc = hbin.GetBinContent( ibin+1 )
     err = hbin.GetBinError( ibin+1 )
     if (acc != 0.0):

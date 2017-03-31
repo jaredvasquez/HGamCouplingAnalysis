@@ -19,10 +19,12 @@ private:
   bool m_usePDFUncerts;
   bool m_isGGH, m_isTWH;
   HG::SystematicList sysList;
-
+  
   TTree *m_tree; //!
   int m_category; 
   double m_myy;
+  
+  TString qcdNames[9] = { "mu", "res", "mig01", "mig12", "vbf2j", "vbf3j", "pTH60", "pTH120", "qm_t" }; //!
 
 public:
   // this is a standard constructor

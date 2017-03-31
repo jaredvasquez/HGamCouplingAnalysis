@@ -150,19 +150,12 @@ EL::StatusCode CouplingAnalysis::createOutput()
     }
 
     if (m_isGGH) {
-      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDmu",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDqm",    nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDres",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDpTH",   nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDmig01", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      histoStore()->createTH2F( "h2_catSTXS_WG1_QCDmig12", nCats, 0.5, nCats+0.5, nBins, -0.5, nBins-0.5 );
-      
-      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDmu",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDqm",    nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDres",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDpTH",   nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDmig01", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
-      histoStore()->createTH2F( "h2_fineIndex_WG1_QCDmig12", nCats, 0.5, nCats+0.5, nIndex, -0.5, nIndex-0.5 );
+      for (int iqcd(0); iqcd < 9; iqcd++) {
+        TString suffixQCD = TString::Format("_QCD_2017_%s", qcdNames[iqcd].Data());
+        histoStore()->createTH1F( "h_catSTXS"+suffixQCD,  nCats, 0.5, nCats+0.5 );
+        histoStore()->createTH2F( "h2_catSTXS"+suffixQCD,  nCats, 1, nCats+1, nBins, 0, nBins );
+        histoStore()->createTH2F( "h2_fineIndex"+suffixQCD, nCats, 1, nCats+1, nIndex, 0, nIndex );
+      }
     }
   }
 
@@ -195,10 +188,9 @@ EL::StatusCode CouplingAnalysis::execute()
   // get correction factor for N_init with pT reweighting
   double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.003 : 1.0;
   
-  double wInit = (isData()) ? 1.0 : w_pT * weightInitial() * lumiXsecWeight();
+  //double wInit = (isData()) ? 1.0 : w_pT * weightInitial() * lumiXsecWeight();
   double wMC   = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight() * lumiXsecWeight();
   double w     = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
-  std::cout << w/wMC << std::endl;
 
   if (isMC() && fabs(eventHandler()->mcWeight()) > 150) {
     wMC = w_pT * lumiXsecWeight() * 150 * wMC / fabs(wMC);
@@ -226,10 +218,10 @@ EL::StatusCode CouplingAnalysis::execute()
   if (m_isTWH && STXSbin > 0) STXSbin += 2;
 
   histoStore()->fillTH1F( "h_truthAcc_fineIndex_weightMC", fineIndex, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_fineIndex_weight", fineIndex, wInit );
+  histoStore()->fillTH1F( "h_truthAcc_fineIndex_weight", fineIndex, w ); //wInit );
 
   histoStore()->fillTH1F( "h_truthAcc_weightMC", STXSbin, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_weight", STXSbin, wInit );
+  histoStore()->fillTH1F( "h_truthAcc_weight", STXSbin, w ); //wInit );
 
   // Create histos for weighting
   if ( isMC() ) {
@@ -253,9 +245,9 @@ EL::StatusCode CouplingAnalysis::execute()
     if (!std::isfinite(wASHI)) wASHI = w;
     if (!std::isfinite(wASLO)) wASLO = w;
     
-    histoStore()->fillTH1F(  "h_catSTXS",   m_category, wInit );
-    histoStore()->fillTH2F( "h2_catSTXS",   m_category, STXSbin,   wInit );
-    histoStore()->fillTH2F( "h2_fineIndex", m_category, fineIndex, wInit );
+    histoStore()->fillTH1F(  "h_catSTXS",   m_category, w ); //wInit );
+    histoStore()->fillTH2F( "h2_catSTXS",   m_category, STXSbin,   w ); //wInit );
+    histoStore()->fillTH2F( "h2_fineIndex", m_category, fineIndex, w ); //wInit );
 
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASLO );
@@ -267,12 +259,24 @@ EL::StatusCode CouplingAnalysis::execute()
     histoStore()->fillTH2F( "h2_fineIndex_alphaS_dn", m_category, fineIndex, wASLO );
 
     for (int ipdf(0); ipdf < 30; ipdf++)  {
-      double wPDF = wInit * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
-      if (!std::isfinite(wPDF)) wPDF = wInit;
+      //double wPDF = wInit * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
+      //if (!std::isfinite(wPDF)) wPDF = wInit;
+      double wPDF = w * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
+      if (!std::isfinite(wPDF)) wPDF = w;
       TString suffixPDF = TString::Format("_PDF%d",ipdf);
       histoStore()->fillTH1F(  "h_catSTXS"+suffixPDF,   m_category, wPDF );
       histoStore()->fillTH2F( "h2_catSTXS"+suffixPDF,   m_category, STXSbin, wPDF );
       histoStore()->fillTH2F( "h2_fineIndex"+suffixPDF, m_category, fineIndex, wPDF );
+    }
+
+    if (m_isGGH) { 
+      for (int iqcd(0); iqcd < 9; iqcd++) {
+        double wQCD = w * higgsWeights.qcd_2017[iqcd] / higgsWeights.nominal;
+        TString suffixQCD = TString::Format("_QCD_2017_%s", qcdNames[iqcd].Data());
+        histoStore()->fillTH1F(  "h_catSTXS"+suffixQCD,   m_category, wQCD );
+        histoStore()->fillTH2F( "h2_catSTXS"+suffixQCD,   m_category, STXSbin,   wQCD );
+        histoStore()->fillTH2F( "h2_fineIndex"+suffixQCD, m_category, fineIndex, wQCD );
+      }
     }
   }
 
@@ -343,26 +347,15 @@ EL::StatusCode CouplingAnalysis::execute()
         }
         
         if (m_isGGH) { 
-          double wQCDmu    = w * higgsWeights.qcd_wg1_mu    / higgsWeights.nominal;
-          double wQCDqm    = w * higgsWeights.qcd_wg1_qm    / higgsWeights.nominal;
-          double wQCDres   = w * higgsWeights.qcd_wg1_res   / higgsWeights.nominal;
-          double wQCDpTH   = w * higgsWeights.qcd_wg1_pTH   / higgsWeights.nominal;
-          double wQCDmig01 = w * higgsWeights.qcd_wg1_mig01 / higgsWeights.nominal;
-          double wQCDmig12 = w * higgsWeights.qcd_wg1_mig12 / higgsWeights.nominal;
-          
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDmu",    m_category, STXSbin, wQCDmu    );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDqm",    m_category, STXSbin, wQCDqm    );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDres",   m_category, STXSbin, wQCDres   );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDpTH",   m_category, STXSbin, wQCDpTH   );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDmig01", m_category, STXSbin, wQCDmig01 );
-          histoStore()->fillTH2F( "h2_catSTXS_WG1_QCDmig12", m_category, STXSbin, wQCDmig12 );
-          
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDmu",    m_category, fineIndex, wQCDmu    );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDqm",    m_category, fineIndex, wQCDqm    );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDres",   m_category, fineIndex, wQCDres   );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDpTH",   m_category, fineIndex, wQCDpTH   );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDmig01", m_category, fineIndex, wQCDmig01 );
-          histoStore()->fillTH2F( "h2_fineIndex_WG1_QCDmig12", m_category, fineIndex, wQCDmig12 );
+
+          for (int iqcd(0); iqcd < 9; iqcd++) {
+            double wQCD = w * higgsWeights.qcd_2017[iqcd] / higgsWeights.nominal;
+            TString suffixQCD = TString::Format("_QCD_2017_%s", qcdNames[iqcd].Data());
+            histoStore()->fillTH1F(  "h_catSTXS"+suffixQCD,   m_category, wQCD );
+            histoStore()->fillTH2F( "h2_catSTXS"+suffixQCD,   m_category, STXSbin,   wQCD );
+            histoStore()->fillTH2F( "h2_fineIndex"+suffixQCD, m_category, fineIndex, wQCD );
+          }
+
         }
     
       }
