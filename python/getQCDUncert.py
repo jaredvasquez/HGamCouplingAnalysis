@@ -29,7 +29,7 @@ def printTable( table, header=None ):
 tf = TFile('output/HGamPDF_ggH_NNLOPS/hist-ggH_NNLOPS.root')
 os.system('mkdir -p tablesQCD')
 
-nCats, nBins = 33, len(binNames)
+nCats, nBins = 31, len(binNames)
 
 tables = {}
 tables2 = {}

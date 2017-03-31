@@ -52,7 +52,8 @@ color = {}
 color[ 'ggH'] = 416
 color[ 'VBF'] = 418
 color[  'WH'] = 432
-color[  'ZH'] = 600
+color[  'ZH'] = 860
+color['ggZH'] = (860-6) #602
 color[ 'ttH'] = 880
 color[ 'bbH'] = 632
 color[ 'tHW'] = 800
@@ -60,13 +61,13 @@ color['tHjb'] = 401
 color['ggH_NNLOPS'] = 416
 color[ 'VBF_NNPDF'] = 418
 color[    'WH_NLO'] = 432
-color[    'ZH_NLO'] = 600
+color[    'ZH_NLO'] = 860
 
 
 #--------------------------------------------------------------------
 histName = "h_catSTXS"
 #procs = ["ggH","VBF","WH","ZH","ttH","tHjb","tWH","bbH"]
-procs = ["ggH_NNLOPS","VBF_NNPDF","WH_NLO","ZH_NLO","ttH","bbH","tHjb","tHW"]
+procs = ["ggH_NNLOPS","VBF_NNPDF","WH_NLO","ZH_NLO","ggZH","ttH","bbH","tHjb","tHW"]
 tfs = [ TFile("output/HGamCoupling_%s/hist-%s.root" % (p,p)) for p in procs ]
 hs  = [ tf.Get(histName) for tf in tfs ]
 hsum = sumHist( histName, tfs )
@@ -115,20 +116,22 @@ def drawLabel(x, y, proc):
   tp.SetFillColor(color[proc])
   tp.SetX1NDC(x)
   tp.SetY1NDC(y)
-  tp.SetX2NDC(x+0.04)
-  tp.SetY2NDC(y+0.03)
+  tp.SetX2NDC(x+0.035)
+  tp.SetY2NDC(y+0.025)
   tp.Draw('NDC')
   paves.append(tp)
-  tl.DrawNDC(x+0.05, y+0.007, proc)
+  #if (proc=='ggZH'): proc = 'gg #rightarrow ZH'
+  tl.DrawNDC(x+0.041, y+0.005, proc)
 
-drawLabel(0.04,0.95,'ggH')
-drawLabel(0.16,0.95,'VBF')
-drawLabel(0.28,0.95,'WH')
-drawLabel(0.40,0.95,'ZH')
-drawLabel(0.51,0.95,'ttH')
-drawLabel(0.62,0.95,'bbH')
-drawLabel(0.75,0.95,'tHjb')
-drawLabel(0.87,0.95,'tHW')
+drawLabel(0.02,0.95,'ggH')
+drawLabel(0.13,0.95,'VBF')
+drawLabel(0.24,0.95,'WH')
+drawLabel(0.35,0.95,'ZH')
+drawLabel(0.45,0.95,'ggZH')
+drawLabel(0.58,0.95,'ttH')
+drawLabel(0.67,0.95,'bbH')
+drawLabel(0.78,0.95,'tHjb')
+drawLabel(0.89,0.95,'tHW')
 
 gPad.RedrawAxis()
 gPad.SetTicks(1,1)

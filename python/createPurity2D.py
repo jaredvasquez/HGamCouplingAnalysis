@@ -44,13 +44,14 @@ def purityHistX( hist ):
 
 
 histName = "h2_catSTXS"
-procs = ["ggH_NNLOPS","VBF_NNPDF","WH_NLO","ZH_NLO","ttH","bbH","tHjb","tHW"]
+procs = ["ggH_NNLOPS","VBF_NNPDF","WH_NLO","ZH_NLO","ttH","bbH","tHjb","tHW","ggZH"]
 tfs = [ TFile("output/HGamCoupling_%s/hist-%s.root" % (p,p)) for p in procs ]
 hsum = sumHist( histName, tfs )
 hpur = purityHistX( hsum )
 
 # Filter down for a reduced binning
-filterList = ['UNKNOWN','_FWDH','GG2HLL','BBH']
+#filterList = ['UNKNOWN','_FWDH','GG2HLL','BBH']
+filterList = ['UNKNOWN','_FWDH','BBH']
 def removeBin( binName ):
   for key in filterList:
     if (key in binName): return False
@@ -86,7 +87,8 @@ hpur = rebinHist( hpur, binsKeep, binsMap )
 
 #scaleCan = 1.5
 #can = TCanvas('can','can',int(800*scaleCan),int(600*scaleCan)); can.cd()
-can = TCanvas(); can.cd()
+can = TCanvas()
+can.cd()
 #can.SetTopMargin(0.02)
 #can.SetBottomMargin(0.25)
 can.SetTopMargin(0.08)
@@ -105,8 +107,8 @@ hpur.Draw("AXIS SAME")
 paves = {}
 paves['ggH'] = TPave(  1,  0, 11,  9)
 paves['qqH'] = TPave( 11,  9, 18, 16)
-paves[ 'VH'] = TPave( 18, 16, 23, 24)
-paves['ttH'] = TPave( 23, 24, 32, 27)
+paves[ 'VH'] = TPave( 18, 16, 23, 27)
+paves['ttH'] = TPave( 23, 27, 32, 30)
 for group in paves:
   pave = paves[group]
   pave.SetBorderSize(1)
