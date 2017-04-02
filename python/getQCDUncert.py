@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import tabulate
 from ROOT import *
 
@@ -26,6 +27,16 @@ def printTable( table, header=None ):
     print '-'*len(head)
   for row in table: print ' | '.join(row)
 
+def getAccHist( h2 ):
+  NMC = sum( [h2.GetBinContent(0,t) for t in xrange(1,h2.GetNbinsY()) ] )
+  print NMC
+  for ibin in xrange(1,h2.GetNbinsX()+1):
+    for jbin in xrange(1,h2.GetNbinsY()+1):
+      h2.SetBinContent( ibin, jbin, h2.GetBinContent(ibin,jbin) / NMC )
+  h2.Draw('COLZ')
+  raw_input('done?')
+  return h2
+
 tf = TFile('output/HGamPDF_ggH_NNLOPS/hist-ggH_NNLOPS.root')
 os.system('mkdir -p tablesQCD')
 
@@ -36,10 +47,15 @@ tables2 = {}
 histName = 'h2_catSTXS'
 systNames = [ 'mu', 'res', 'qm_t', 'pTH60', 'pTH120', 'mig01', 'mig12', 'vbf2j', 'vbf3j' ]
 
+systMap = { cat: { tbin: {} for tbin in binNames } for cat in HG.CatLabels }
+
 hnom = tf.Get( histName )
+#hnom = getAccHist( hnom )
 for systName in systNames:
   hSystName = '%s_QCD_2017_%s' % (histName, systName)
+
   hsys = tf.Get( hSystName )
+  #hsys = getAccHist( hsys )
   hsys.Add( hnom, -1 )
   hsys.Divide( hnom )
 
@@ -55,6 +71,12 @@ for systName in systNames:
     table.append(row)
     table2.append(row2)
   tables[systName] = table
+
+  for ibin, catName in enumerate(HG.CatLabels):
+    for jbin, binName in enumerate(binNames):
+      err = float('%.3f' % hsys.GetBinContent( ibin+1, jbin+3 ))
+      if (err==0.): continue
+      systMap[catName][binName]['ATLAS_QCDscale_ggF_'+systName] = [ err, err, 'logn' ]
 
   print ''
   print ''
@@ -73,5 +95,14 @@ for ibin, binName in enumerate(binNames):
   table.append( [ibin+1,binName.replace('_','\_')] )
 log = open('tablesQCD/table_Legend.tex', 'w+')
 print >> log, tabulate.tabulate( table, headers=['Index','Truth Bin'], tablefmt='latex' )
+
+# clean up ggF uncerts
+for catName in HG.CatLabels:
+  for binName in binNames:
+    if len(systMap[catName][binName]) == 0:
+      del systMap[catName][binName]
+  if len(systMap[catName])==0:
+    del systMap[catName]
+json.dump(systMap, open('ggFQCD.json','wb'))
 
 print ''
