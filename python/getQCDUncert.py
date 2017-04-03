@@ -8,7 +8,7 @@ tabulate.LATEX_ESCAPE_RULES={}
 sys.dont_write_bytecode = True
 import HGamMoriondCatsBDT as HG
 
-binNames = ['GG2H_FWDH','GG2H_VBFTOPO_JET3VETO','GG2H_VBFTOPO_JET3','GG2H_0J','GG2H_1J_PTH_0_60','GG2H_1J_PTH_60_120','GG2H_1J_PTH_120_200','GG2H_1J_PTH_GT200','GG2H_GE2J_PTH_0_60','GG2H_GE2J_PTH_60_120','GG2H_GE2J_PTH_120_200','GG2H_GE2J_PTH_GT200']
+binNames = ['gg2H_fwdH','gg2H_VBFtopo_jet3veto','gg2H_VBFtopo_jet3','gg2H_0J','gg2H_1J_ptH_0_60','gg2H_1J_ptH_60_120','gg2H_1J_ptH_120_200','gg2H_1J_ptH_gt200','gg2H_ge2J_ptH_0_60','gg2H_ge2J_ptH_60_120','gg2H_ge2J_ptH_120_200','gg2H_ge2J_ptH_gt200']
 binNames = binNames[1:]
 
 fmt = '%5.1f'
@@ -101,7 +101,7 @@ for catName in HG.CatLabels:
   for binName in binNames:
     if len(systMap[catName][binName]) == 0:
       del systMap[catName][binName]
-  if len(systMap[catName])==0:
+  if len(systMap[catName]) == 0:
     del systMap[catName]
 json.dump(systMap, open('ggFQCD.json','wb'))
 

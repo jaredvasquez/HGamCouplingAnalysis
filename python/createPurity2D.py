@@ -105,10 +105,12 @@ hpur.Draw("colz")
 hpur.Draw("AXIS SAME")
 
 paves = {}
-paves['ggH'] = TPave(  1,  0, 11,  9)
-paves['qqH'] = TPave( 11,  9, 18, 16)
-paves[ 'VH'] = TPave( 18, 16, 23, 27)
-paves['ttH'] = TPave( 23, 27, 32, 30)
+paves[ 'ggH'] = TPave(  1,  0, 11,  9)
+paves[ 'qqH'] = TPave( 11,  9, 18, 16)
+paves[  'VH'] = TPave( 18, 16, 23, 27)
+paves['ggZH'] = TPave( 18, 24, 23, 27)
+paves['ggZH'].SetLineStyle(2)
+paves[ 'ttH'] = TPave( 23, 27, 32, 30)
 for group in paves:
   pave = paves[group]
   pave.SetBorderSize(1)

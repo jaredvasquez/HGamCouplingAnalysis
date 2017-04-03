@@ -188,7 +188,7 @@ EL::StatusCode CouplingAnalysis::execute()
   // get correction factor for N_init with pT reweighting
   double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.003 : 1.0;
   
-  //double wInit = (isData()) ? 1.0 : w_pT * weightInitial() * lumiXsecWeight();
+  double wInit = (isData()) ? 1.0 : w_pT * weightInitial() * lumiXsecWeight();
   double wMC   = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight() * lumiXsecWeight();
   double w     = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
 
@@ -218,10 +218,10 @@ EL::StatusCode CouplingAnalysis::execute()
   if (m_isTWH && STXSbin > 0) STXSbin += 2;
 
   histoStore()->fillTH1F( "h_truthAcc_fineIndex_weightMC", fineIndex, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_fineIndex_weight", fineIndex, w ); //wInit );
+  histoStore()->fillTH1F( "h_truthAcc_fineIndex_weight", fineIndex, wInit );
 
   histoStore()->fillTH1F( "h_truthAcc_weightMC", STXSbin, wMC );
-  histoStore()->fillTH1F( "h_truthAcc_weight", STXSbin, w ); //wInit );
+  histoStore()->fillTH1F( "h_truthAcc_weight", STXSbin, wInit );
 
   // Create histos for weighting
   if ( isMC() ) {
@@ -239,15 +239,15 @@ EL::StatusCode CouplingAnalysis::execute()
     xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
     m_category = -999;
 
-    double wASHI = w * higgsWeights.alphaS_up / higgsWeights.nominal;
-    double wASLO = w * higgsWeights.alphaS_dn / higgsWeights.nominal;
+    double wASHI = wInit * higgsWeights.alphaS_up / higgsWeights.nominal;
+    double wASLO = wInit * higgsWeights.alphaS_dn / higgsWeights.nominal;
 
-    if (!std::isfinite(wASHI)) wASHI = w;
-    if (!std::isfinite(wASLO)) wASLO = w;
+    if (!std::isfinite(wASHI)) wASHI = wInit;
+    if (!std::isfinite(wASLO)) wASLO = wInit;
     
-    histoStore()->fillTH1F(  "h_catSTXS",   m_category, w ); //wInit );
-    histoStore()->fillTH2F( "h2_catSTXS",   m_category, STXSbin,   w ); //wInit );
-    histoStore()->fillTH2F( "h2_fineIndex", m_category, fineIndex, w ); //wInit );
+    histoStore()->fillTH1F(  "h_catSTXS",   m_category, wInit );
+    histoStore()->fillTH2F( "h2_catSTXS",   m_category, STXSbin,   wInit );
+    histoStore()->fillTH2F( "h2_fineIndex", m_category, fineIndex, wInit );
 
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_up",   m_category, wASHI );
     histoStore()->fillTH1F(  "h_catSTXS_alphaS_dn",   m_category, wASLO );
@@ -259,10 +259,10 @@ EL::StatusCode CouplingAnalysis::execute()
     histoStore()->fillTH2F( "h2_fineIndex_alphaS_dn", m_category, fineIndex, wASLO );
 
     for (int ipdf(0); ipdf < 30; ipdf++)  {
-      //double wPDF = wInit * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
-      //if (!std::isfinite(wPDF)) wPDF = wInit;
-      double wPDF = w * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
-      if (!std::isfinite(wPDF)) wPDF = w;
+      double wPDF = wInit * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
+      if (!std::isfinite(wPDF)) wPDF = wInit;
+      //double wPDF = w * higgsWeights.pdf4lhc_unc[ipdf] / higgsWeights.nominal;
+      //if (!std::isfinite(wPDF)) wPDF = w;
       TString suffixPDF = TString::Format("_PDF%d",ipdf);
       histoStore()->fillTH1F(  "h_catSTXS"+suffixPDF,   m_category, wPDF );
       histoStore()->fillTH2F( "h2_catSTXS"+suffixPDF,   m_category, STXSbin, wPDF );
@@ -271,7 +271,8 @@ EL::StatusCode CouplingAnalysis::execute()
 
     if (m_isGGH) { 
       for (int iqcd(0); iqcd < 9; iqcd++) {
-        double wQCD = w * higgsWeights.qcd_2017[iqcd] / higgsWeights.nominal;
+        double wQCD = wInit * higgsWeights.qcd_2017[iqcd] / higgsWeights.nominal;
+        //double wQCD = w * higgsWeights.qcd_2017[iqcd] / higgsWeights.nominal;
         TString suffixQCD = TString::Format("_QCD_2017_%s", qcdNames[iqcd].Data());
         histoStore()->fillTH1F(  "h_catSTXS"+suffixQCD,   m_category, wQCD );
         histoStore()->fillTH2F( "h2_catSTXS"+suffixQCD,   m_category, STXSbin,   wQCD );
