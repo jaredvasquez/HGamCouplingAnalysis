@@ -15,7 +15,7 @@ CatLabels = [
     "VBF_HjjHI_tight",
     "VHhad_loose",
     "VHhad_tight",
-    "QQH_BSM",
+    "JET1PT_BSM",
     "VHMET_LOW",
     "VHMET_HIGH",
     #"VHMET_MET",

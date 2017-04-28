@@ -12,6 +12,7 @@ procName = {
        'WH_NLO' : 'WH (Powheg + Pythia8)',
        'ZH_NLO' : 'ZH (Powheg + Pythia8)',
           'ttH' : 'ttH (aMC@NLO + Pythia8)',
+     'ttH_Hwpp' : 'ttH (aMC@NLO + Herwig++)',
           'bbH' : 'bbH (aMC@NLO + Pythia8)',
           'tHW' : 'tHW (aMC@NLO + Herwig++)',
          'tHjb' : 'tHjb (MadGraph + Pythia8)',
@@ -35,8 +36,9 @@ xsec = {          # [pb]
    'VBF_NNPDF' : 3.779E+00,
       'WH_NLO' : 1.369E+00,
       'ZH_NLO' : 7.591E-01,
-        'ggZH' : 1.233E-01,
+        'ggZH' : 1.227E-01,
          'ttH' : 5.065E-01,
+    'ttH_Hwpp' : 5.065E-01,
          'bbH' : 4.863E-01,
          'tHW' : 1.517E-02,
         'tHjb' : 7.425E-02,
@@ -48,7 +50,10 @@ xsec = {          # [pb]
 binXS = []
 
 
-procs=['ggH_NNLOPS','VBF_NNPDF','WH_NLO','ZH_NLO','ttH','bbH','tHW','tHjb','ggZH']
+#procs=['ggH_NNLOPS','VBF_NNPDF','WH_NLO','ZH_NLO','ggZH','ttH','bbH','tHW','tHjb']
+procs=['WH_NLO'] #ZH_NLO','ggZH']
+procs=['ZH_NLO','ggZH']
+procs=['ggH_NNLOPS']
 histName = 'h_truthAcc_fineIndex_weightMC'
 
 def getSumHist( h ):
@@ -82,22 +87,37 @@ for proc in procs:
   print '-'*60
   for ibin, binName in enumerate( FineIndexLabels ):
     if (ibin < 1): continue
-    if (('ggZH' in proc) and (ibin < 15)): continue # omit gg->ZH->had
+    #if (('ggZH' in proc) and (ibin < 15)): continue # omit gg->ZH->had
     acc = hbin.GetBinContent( ibin+1 )
     err = hbin.GetBinError( ibin+1 )
     if (acc != 0.0):
-      print '%35s : %6.4f +/- %6.4f' % (binName, acc, err)
+      print '%35s : %8.3e +/- %8.4e' % (binName, acc, err)
       binXS.append( ( binName, acc*BR*xsec[proc]*1000) )
   print ''
 print '\n\n'
+
+
 
 # Get Cross-Sections
 import collections
 counts = collections.Counter(binXS)
 dups = [i for i in counts if counts[i]>1] # Check for duplicates
 if dups: print 'Uh oh! Duplicates of bins:', dups
+
+xsec = collections.OrderedDict()
+for binName, XS in binXS:
+  xsec[binName] = 0
+for binName, XS in binXS:
+  xsec[binName] += XS
+
+
 print '   STXS Cross-Sections [fb]'
 print '-'*45
-for binName, XS in binXS:
-  #print '    %s : %8.3E' % ('%s' % binName, XS*0.001)
-  print '%30s : %8.3E,' % ('\'%s\'' % binName, XS)
+totXS = 0.
+for binName, XS in xsec.iteritems():
+  print '   %s : %8.3E' % ('%s' % binName, XS) #*0.001)
+  #print '%30s : %8.3E,' % ('\'%s\'' % binName, XS)
+  if not 'fwdH' in binName:
+    totXS += XS
+
+print 'Total XS : %8.3E' % (totXS)

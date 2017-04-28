@@ -3,6 +3,7 @@ import sys
 import json
 import ROOT
 import tabulate
+from math import sqrt
 
 tabulate.LATEX_ESCAPE_RULES={}
 sys.dont_write_bytecode = True
@@ -34,10 +35,10 @@ def formatCell(d, cat, sys):
   else:
     hi, lo, form = d[cat][sys]
     if form == 'logn':
-      if float('%.2f'%(hi*100)) == 0.:
+      if float('%.1f'%(hi*100)) == 0.:
         return '---'
-      return '%+.2f' % ((hi*100))
-    return '${}^{%+.2f}_{%+.2f}$' % (hi*100, lo*100)
+      return '%+.1f' % ((hi*100))
+    return '${}^{%+.1f}_{%+.1f}$' % (hi*100, lo*100)
 
 
 # -----------------------------------------------------------------------
@@ -56,6 +57,9 @@ def pruneSysts( allSys ):
           pruneSys = True
         elif (abs(lo/hi) > 5 or abs(hi/lo) > 5):
           pruneSys = True
+        #elif (abs(hi) < 0.005 or abs(lo) < 0.005):
+        #elif (abs(hi) < 0.0025 or abs(lo) < 0.0025):
+        #  pruneSys = True
         elif lo*hi > 0:
           # assume positive correlations when up/down have same trends
           #  --> could also symmetrize with max?
@@ -77,16 +81,16 @@ def getSys():
     for ipdf in xrange(nSys):
       hsys = tf.Get('h_catSTXS_PDF{}'.format(ipdf))
       for icat, cat in enumerate(HG.CatLabels):
-        nom = hnom.GetBinContent(icat+1) / hnom.GetBinContent(0)
-        sys = hsys.GetBinContent(icat+1) / hsys.GetBinContent(0)
+        nom = hnom.GetBinContent(icat+1) #/ hnom.GetBinContent(0)
+        sys = hsys.GetBinContent(icat+1) #/ hsys.GetBinContent(0)
         err = fixPrecision( getDiff(nom, sys) )
         sysMap[proc][cat][NPnames[ipdf]] = [ err, err, 'logn' ]
 
     for suffix in [ '_alphaS_up', '_alphaS_dn']:
       hsys = tf.Get('h_catSTXS'+suffix)
       for icat, cat in enumerate(HG.CatLabels):
-        nom = hnom.GetBinContent(icat+1) / hnom.GetBinContent(0)
-        sys = hsys.GetBinContent(icat+1) / hsys.GetBinContent(0)
+        nom = hnom.GetBinContent(icat+1) #/ hnom.GetBinContent(0)
+        sys = hsys.GetBinContent(icat+1) #/ hsys.GetBinContent(0)
         err = fixPrecision( getDiff(nom, sys) )
         sysMap[proc][cat]['ATLAS_PDF4LHC_NLO_30'+suffix] = [ err, err, 'logn' ]
 
@@ -108,8 +112,8 @@ def getSys():
 # -----------------------------------------------------------------------
 if __name__ == "__main__":
   sysAll = getSys()
-  sysAll.update( json.load(open('pdfSysRW.json')) )
-  #sysAll = json.load(open('pdfSysRW.json'))
+  #sysAll.update( json.load(open('pdfSysRW.json')) )
+  sysAll.update( json.load(open('pdfSysRW_yield.json')) )
 
   #sysMap = sysAll
   sysMap = pruneSysts(sysAll)
@@ -155,13 +159,25 @@ if __name__ == "__main__":
     print >> log, tabulate.tabulate( table, headers=headers, tablefmt='latex' )
 
   import sys
-  #sys.exit()
+  sys.exit()
   print '\n\n'
-  for proc in sysMap:
-    cat = 'GGH_0J_CEN'
-    print proc
-    for NP in sorted(sysMap[proc][cat]):
-      print '  -->', NP, ':', sysMap[proc][cat][NP]
+  for cat in HG.CatLabels:
+    print ''
+    print cat
+    print '-'*35
+    for proc in sysMap:
+      #cat = 'GGH_0J_CEN'
+      print proc
+      tot = 0
+      tot2 = 0
+      for NP in sorted(sysMap[proc][cat]):
+        syst = max(sysMap[proc][cat][NP][0:1])
+        tot += syst**2
+        if abs(syst) >= 0.0025:
+          tot2 += syst**2
+          #print '  -->', NP, ':', sysMap[proc][cat][NP]
+      print '  --> TOTAL  : ', sqrt(tot)
+      print '  --> PRUNED : ', sqrt(tot2)
 
 
   #for icat, cat in enumerate(HG.CatLabels):

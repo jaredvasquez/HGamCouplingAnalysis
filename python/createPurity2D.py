@@ -87,7 +87,7 @@ hpur = rebinHist( hpur, binsKeep, binsMap )
 
 #scaleCan = 1.5
 #can = TCanvas('can','can',int(800*scaleCan),int(600*scaleCan)); can.cd()
-can = TCanvas()
+can = TCanvas('can','', 1100, 800)
 can.cd()
 #can.SetTopMargin(0.02)
 #can.SetBottomMargin(0.25)
@@ -108,7 +108,7 @@ paves = {}
 paves[ 'ggH'] = TPave(  1,  0, 11,  9)
 paves[ 'qqH'] = TPave( 11,  9, 18, 16)
 paves[  'VH'] = TPave( 18, 16, 23, 27)
-paves['ggZH'] = TPave( 18, 24, 23, 27)
+paves['ggZH'] = TPave( 18, 20, 23, 24)
 paves['ggZH'].SetLineStyle(2)
 paves[ 'ttH'] = TPave( 23, 27, 32, 30)
 for group in paves:

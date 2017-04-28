@@ -39,7 +39,7 @@ EL::StatusCode CouplingAnalysis::createOutput()
   m_useSystematics = config()->getBool("HGamCoupling.UseSystematics", false);
 
   // Only apply the reweighting to ggH MC
-  m_reweightHiggsPt = config()->getBool("HGamCoupling.ReweightHiggsPt", false);
+  //m_reweightHiggsPt = config()->getBool("HGamCoupling.ReweightHiggsPt", false);
   
   int mcid = (isData()) ? -999 : eventInfo()->mcChannelNumber();
 
@@ -48,12 +48,12 @@ EL::StatusCode CouplingAnalysis::createOutput()
   if (isMC()) {
     m_isGGH = getMCSampleName(mcid).Contains("ggH125");
     m_isTWH = getMCSampleName(mcid).Contains("tWH125");
-    m_reweightHiggsPt &= m_isGGH;
-  } else m_reweightHiggsPt = false;
+    //m_reweightHiggsPt &= m_isGGH;
+  } //else m_reweightHiggsPt = false;
     
 
-  if (m_reweightHiggsPt) std::cout << "*** !!! REWEIGHTING HIGGS PT !!! ***" << std::endl;
-  else               std::cout << "*** !!! NOT REWEIGHTING HIGGS PT !!! ***" << std::endl;
+  //if (m_reweightHiggsPt) std::cout << "*** !!! REWEIGHTING HIGGS PT !!! ***" << std::endl;
+  //else               std::cout << "*** !!! NOT REWEIGHTING HIGGS PT !!! ***" << std::endl;
       
   m_usePDFUncerts = false;
   if (isMC()) {
@@ -176,24 +176,15 @@ EL::StatusCode CouplingAnalysis::execute()
   HgammaAnalysis::execute();
 
   // Blind the data
-  if (isData() && var::m_yy() >= 120*HG::GeV && var::m_yy() < 130*HG::GeV) return EL::StatusCode::SUCCESS;
+  //if (isData() && var::m_yy() >= 120*HG::GeV && var::m_yy() < 130*HG::GeV) return EL::StatusCode::SUCCESS;
 
-  
-  // Apply Higgs pT reweighting
-  double w_pT = 1.0; 
-  if ( isMC() && m_reweightHiggsPt && (eventInfo()->auxdata<int>("HTXS_Njets_pTjet25") < 2) ) {
-    w_pT = HIGGS::ggF_01jet_hpT_weight( var::pT_h1.truth()*HG::invGeV );
-  }
-
-  // get correction factor for N_init with pT reweighting
-  double corrDenom = ( isMC() && m_reweightHiggsPt ) ? 1.003 : 1.0;
-  
-  double wInit = (isData()) ? 1.0 : w_pT * weightInitial() * lumiXsecWeight();
-  double wMC   = (isData()) ? 1.0 : w_pT * eventHandler()->mcWeight() * lumiXsecWeight();
-  double w     = (isData()) ? 1.0 : w_pT * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
+  // event weights
+  double wInit = (isData()) ? 1.0 : weightInitial() * lumiXsecWeight();
+  double wMC   = (isData()) ? 1.0 : eventHandler()->mcWeight() * lumiXsecWeight();
+  double w     = (isData()) ? 1.0 : weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
 
   if (isMC() && fabs(eventHandler()->mcWeight()) > 150) {
-    wMC = w_pT * lumiXsecWeight() * 150 * wMC / fabs(wMC);
+    wMC = lumiXsecWeight() * 150 * wMC / fabs(wMC);
   }
 
   // Save Histogram for Truth Acceptance
@@ -225,17 +216,17 @@ EL::StatusCode CouplingAnalysis::execute()
 
   // Create histos for weighting
   if ( isMC() ) {
-    histoStore()->fillTH1F( "h_initialEvents_weighted_pTRW", 1.0, weightInitial() * w_pT );
+    histoStore()->fillTH1F( "h_initialEvents_weighted_pTRW", 1.0, weightInitial() );
     histoStore()->fillTH1F( "h_initialEvents_weighted",      1.0, weightInitial() );
   }
 
   if ( isMC() && not var::isDalitzEvent() ) {
-    histoStore()->fillTH1F( "h_initialEvents_noDalitz_weighted_pTRW", 1.0, weightInitial() * w_pT );
+    histoStore()->fillTH1F( "h_initialEvents_noDalitz_weighted_pTRW", 1.0, weightInitial() );
     histoStore()->fillTH1F( "h_initialEvents_noDalitz_weighted",      1.0, weightInitial() );
   }
 
   // PDF, alpha_S, and ggH QCD uncertainties
-  if (isMC() && m_usePDFUncerts) {
+  if (isMC() && m_usePDFUncerts && !var::isDalitzEvent()) {
     xAOD::HiggsWeights higgsWeights = eventHandler()->higgsWeights();
     m_category = -999;
 
@@ -299,8 +290,7 @@ EL::StatusCode CouplingAnalysis::execute()
 
     if (not var::isPassed()) return EL::StatusCode::SUCCESS;
 
-    //w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017() * lumiXsecWeight();
-    w = (isData()) ? 1.0 : w_pT * corrDenom * weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
+    w = (isData()) ? 1.0 : weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
     if (w == 0.) return EL::StatusCode::SUCCESS;
     
     //m_category = var::catCoup_Moriond2017();

@@ -11,6 +11,13 @@ import HGamMoriondCatsBDT as HG
 binNames = ['gg2H_fwdH','gg2H_VBFtopo_jet3veto','gg2H_VBFtopo_jet3','gg2H_0J','gg2H_1J_ptH_0_60','gg2H_1J_ptH_60_120','gg2H_1J_ptH_120_200','gg2H_1J_ptH_gt200','gg2H_ge2J_ptH_0_60','gg2H_ge2J_ptH_60_120','gg2H_ge2J_ptH_120_200','gg2H_ge2J_ptH_gt200']
 binNames = binNames[1:]
 
+#mergeBins = range(1,len(binNames))
+mergeBins = [ 1, 2 ]
+print 'Merging bins...'
+for ibin in mergeBins:
+  print '  -', binNames[ibin-1]
+
+
 fmt = '%5.1f'
 def formatCell(sys):
   if float(fmt % sys) == 0:
@@ -27,14 +34,22 @@ def printTable( table, header=None ):
     print '-'*len(head)
   for row in table: print ' | '.join(row)
 
+def mergeBinsH2( h2 ):
+  for ibin in xrange(0,h2.GetNbinsX()+1):
+    sumBins = sum( [ h2.GetBinContent(ibin, im+2) for im in mergeBins ] )
+    #print ibin
+    for jbin in mergeBins:
+      #print '  -', jbin, h2.GetBinContent( ibin, jbin+2 ), sumBins
+      h2.SetBinContent( ibin, jbin+2, sumBins )
+  return h2
+
 def getAccHist( h2 ):
-  NMC = sum( [h2.GetBinContent(0,t) for t in xrange(1,h2.GetNbinsY()) ] )
-  print NMC
+  h2 = mergeBinsH2( h2 )
   for ibin in xrange(1,h2.GetNbinsX()+1):
     for jbin in xrange(1,h2.GetNbinsY()+1):
-      h2.SetBinContent( ibin, jbin, h2.GetBinContent(ibin,jbin) / NMC )
-  h2.Draw('COLZ')
-  raw_input('done?')
+      err = h2.GetBinContent(ibin,jbin)
+      if (err == 0.): continue
+      h2.SetBinContent( ibin, jbin, err / h2.GetBinContent(0,jbin) )
   return h2
 
 tf = TFile('output/HGamPDF_ggH_NNLOPS/hist-ggH_NNLOPS.root')
@@ -50,12 +65,12 @@ systNames = [ 'mu', 'res', 'qm_t', 'pTH60', 'pTH120', 'mig01', 'mig12', 'vbf2j',
 systMap = { cat: { tbin: {} for tbin in binNames } for cat in HG.CatLabels }
 
 hnom = tf.Get( histName )
-#hnom = getAccHist( hnom )
+hnom = getAccHist( hnom )
 for systName in systNames:
   hSystName = '%s_QCD_2017_%s' % (histName, systName)
 
   hsys = tf.Get( hSystName )
-  #hsys = getAccHist( hsys )
+  hsys = getAccHist( hsys )
   hsys.Add( hnom, -1 )
   hsys.Divide( hnom )
 
