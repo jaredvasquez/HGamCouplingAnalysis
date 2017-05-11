@@ -78,7 +78,7 @@ EL::StatusCode CouplingAnalysis::createOutput()
   }
 
   // Create Histograms
-  int nCats(31), nBins(42), nIndex(53);
+  int nCats(31), nBins(42), nIndex(65);
 
   histoStore()->createTH1F( "h_truthAcc_fineIndex_weightMC", nIndex, -0.5, nIndex-0.5 );
   histoStore()->createTH1F( "h_truthAcc_fineIndex_weight", nIndex, -0.5, nIndex-0.5 );
@@ -183,9 +183,9 @@ EL::StatusCode CouplingAnalysis::execute()
   double wMC   = (isData()) ? 1.0 : eventHandler()->mcWeight() * lumiXsecWeight();
   double w     = (isData()) ? 1.0 : weightCatCoup_Moriond2017BDT() * lumiXsecWeight();
 
-  if (isMC() && fabs(eventHandler()->mcWeight()) > 150) {
-    wMC = lumiXsecWeight() * 150 * wMC / fabs(wMC);
-  }
+  //if (isMC() && fabs(eventHandler()->mcWeight()) > 150) {
+  //  wMC = lumiXsecWeight() * 150 * wMC / fabs(wMC);
+  //}
 
   // Save Histogram for Truth Acceptance
   int stage1(0), errorCode(0);
@@ -201,6 +201,9 @@ EL::StatusCode CouplingAnalysis::execute()
     if (stage1 / 100 == 8) {
       fineIndex = 49 + (stage1%100);
       if (m_isTWH) fineIndex += 2;
+    }
+    if ((stage1/100 == 1) && (eventInfo()->auxdata<int>("HTXS_prodMode")==5)) {
+      fineIndex += 52;  // split off ggZH_gg2H bins
     }
   }
 

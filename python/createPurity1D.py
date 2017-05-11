@@ -139,5 +139,5 @@ gPad.SetTicks(1,1)
 to = TFile("stack.root","RECREATE")
 hstack.Write("purity1D")
 
-can.SaveAs("plots/purity1d.pdf")
-can.SaveAs("plots/purity1d.png")
+can.SaveAs("plots/purity_1D.pdf")
+can.SaveAs("plots/purity_1D.png")

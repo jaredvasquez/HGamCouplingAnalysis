@@ -24,12 +24,16 @@ def myround(num, digs):
   return num
 
 def printTable(tab, headers=None):
-  tmp = '%18s' + ' & %6s'*(len(tab[0])-1) + ' \\\\'
+  ncols = len(tab[0])
+  print '\\begin{tabular}{r|c|%s}' % ('r'*(ncols-2))
+  print ' & & \multicolumn{9}{c}{Composition [\%]} \\\\'
+  tmp = '%18s' + ' & %6s'*(ncols-1) + ' \\\\'
   if headers:
     print tmp % tuple(headers)
     print '\hline'
   for row in tab:
     print tmp % tuple(row)
+  print '\\end{tabular}'
 
 #--------------------------------------------------------------------
 histName = 'h_catSTXS'

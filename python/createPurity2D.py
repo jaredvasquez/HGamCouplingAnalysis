@@ -2,6 +2,7 @@ from ROOT import *
 import prettyplots
 import HGamMoriondCatsBDT as HG
 
+gROOT.SetBatch(1)
 gStyle.SetOptStat(0)
 prettyplots.setPalette("rainbow")
 #prettyplots.setPalette("sequentialGB")
@@ -22,7 +23,7 @@ def decorateHist( hist, ztitle=None ):
   hist.GetYaxis().SetTitleOffset(4.5)
   hist.SetMinimum(0.0)
   hist.GetXaxis().SetRangeUser( 1, len(CatLabels)+1 )
-  hist.GetYaxis().SetRangeUser( 0., len(Stage1_Labels) )
+  hist.GetYaxis().SetRangeUser( 0., len(Stage1_Labels))
   return hist
 
 def sumHist( histName, tfs ):
@@ -68,8 +69,8 @@ def rebinHist( origHist, useBins, binsMap ):
   for jbin in xrange(1, hist.GetNbinsY()+1 ):
     hist.GetYaxis().SetBinLabel( jbin, '' )
     for ibin in xrange(1, hist.GetNbinsX()+1 ):
-      pass
-      #hist.SetBinContent( ibin, jbin, 0.0 )
+      hist.SetBinContent( ibin, jbin, 0.0 )
+      #pass
   hist.GetYaxis().SetRangeUser( 0, len(useBins) )
 
   # Fill Purities
@@ -124,5 +125,5 @@ tl.DrawLatex(0.3, 0.95, "#bf{#it{#bf{ATLAS}} Internal}")
 tl.SetTextSize(0.04)
 tl.DrawLatex(0.55, 0.95, "#bf{#it{H #rightarrow #gamma#gamma, m_{H} = 125.09} GeV}")
 
-can.SaveAs("plots/purity2d.pdf")
-can.SaveAs("plots/purity2d.png")
+can.SaveAs("plots/purity_2D.pdf")
+can.SaveAs("plots/purity_2D.png")

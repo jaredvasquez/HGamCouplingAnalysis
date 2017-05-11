@@ -50,10 +50,8 @@ xsec = {          # [pb]
 binXS = []
 
 
-#procs=['ggH_NNLOPS','VBF_NNPDF','WH_NLO','ZH_NLO','ggZH','ttH','bbH','tHW','tHjb']
-procs=['WH_NLO'] #ZH_NLO','ggZH']
-procs=['ZH_NLO','ggZH']
-procs=['ggH_NNLOPS']
+procs=['ggH_NNLOPS','VBF_NNPDF','WH_NLO','ZH_NLO','ggZH','ttH','bbH','tHW','tHjb']
+#procs=['ggH_NNLOPS']
 histName = 'h_truthAcc_fineIndex_weightMC'
 
 def getSumHist( h ):
@@ -91,7 +89,8 @@ for proc in procs:
     acc = hbin.GetBinContent( ibin+1 )
     err = hbin.GetBinError( ibin+1 )
     if (acc != 0.0):
-      print '%35s : %8.3e +/- %8.4e' % (binName, acc, err)
+      #print '%35s : %8.3e +/- %8.4e' % (binName, acc, err)
+      print '\'%s\' : %8.3e' % (binName, acc)
       binXS.append( ( binName, acc*BR*xsec[proc]*1000) )
   print ''
 print '\n\n'
@@ -115,8 +114,8 @@ print '   STXS Cross-Sections [fb]'
 print '-'*45
 totXS = 0.
 for binName, XS in xsec.iteritems():
-  print '   %s : %8.3E' % ('%s' % binName, XS) #*0.001)
-  #print '%30s : %8.3E,' % ('\'%s\'' % binName, XS)
+  #print '   %-s : %8.3E' % ('%s' % binName, XS) #*0.001)
+  print '%30s : %8.3E,' % ('\'%s\'' % binName, XS)
   if not 'fwdH' in binName:
     totXS += XS
 
