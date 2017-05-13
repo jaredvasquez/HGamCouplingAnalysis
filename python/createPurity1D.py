@@ -1,6 +1,6 @@
 from ROOT import *
 import prettyplots
-import HGamMoriondCatsBDT as HG
+import HGamMoriondCatsBDT2 as HG
 
 gStyle.SetOptStat(0)
 #prettyplots.setPalette("rainbow")
