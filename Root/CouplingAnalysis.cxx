@@ -149,6 +149,13 @@ EL::StatusCode CouplingAnalysis::createOutput()
       histoStore()->createTH2F( "h2_fineIndex"+suffixPDF,  nCats, 1, nCats+1, nIndex, 0, nIndex );
     }
 
+    for (int iqcd(0); iqcd < 8; iqcd++) {
+      TString suffixQCD = TString::Format("_QCD%d",iqcd);
+      histoStore()->createTH1F( "h_catSTXS"+suffixQCD,  nCats, 0.5, nCats+0.5 );
+      histoStore()->createTH2F( "h2_catSTXS"+suffixQCD,  nCats, 1, nCats+1, nBins, 0, nBins );
+      histoStore()->createTH2F( "h2_fineIndex"+suffixQCD,  nCats, 1, nCats+1, nIndex, 0, nIndex );
+    }
+
     if (m_isGGH) {
       for (int iqcd(0); iqcd < 9; iqcd++) {
         TString suffixQCD = TString::Format("_QCD_2017_%s", qcdNames[iqcd].Data());
@@ -263,6 +270,16 @@ EL::StatusCode CouplingAnalysis::execute()
       histoStore()->fillTH2F( "h2_fineIndex"+suffixPDF, m_category, fineIndex, wPDF );
     }
 
+    //std::cout << std::endl << "nominal = " << wInit << std::endl;
+    for (int iqcd(0); iqcd < 8; iqcd++)  {
+      double wQCD = wInit * higgsWeights.qcd[iqcd] / higgsWeights.nominal;
+      //std::cout << "QCD(" << iqcd << ") = " << higgsWeights.qcd[iqcd] / higgsWeights.nominal << std::endl;
+      TString suffixQCD = TString::Format("_QCD%d",iqcd);
+      histoStore()->fillTH1F(  "h_catSTXS"+suffixQCD,   m_category, wQCD );
+      histoStore()->fillTH2F( "h2_catSTXS"+suffixQCD,   m_category, STXSbin, wQCD );
+      histoStore()->fillTH2F( "h2_fineIndex"+suffixQCD, m_category, fineIndex, wQCD );
+    }
+
     if (m_isGGH) { 
       for (int iqcd(0); iqcd < 9; iqcd++) {
         double wQCD = wInit * higgsWeights.qcd_2017[iqcd] / higgsWeights.nominal;
@@ -340,8 +357,17 @@ EL::StatusCode CouplingAnalysis::execute()
           histoStore()->fillTH2F( "h2_fineIndex"+suffixPDF, m_category, fineIndex, wPDF );
         }
         
-        if (m_isGGH) { 
+        //std::cout << std::endl << "nominal = " << w << std::endl;
+        for (int iqcd(0); iqcd < 8; iqcd++)  {
+          double wQCD = w * higgsWeights.qcd[iqcd] / higgsWeights.nominal;
+          //std::cout << "QCD(" << iqcd << ") = " << higgsWeights.qcd[iqcd] / higgsWeights.nominal << std::endl;
+          TString suffixQCD = TString::Format("_QCD%d",iqcd);
+          histoStore()->fillTH1F(  "h_catSTXS"+suffixQCD,   m_category, wQCD );
+          histoStore()->fillTH2F( "h2_catSTXS"+suffixQCD,   m_category, STXSbin, wQCD );
+          histoStore()->fillTH2F( "h2_fineIndex"+suffixQCD, m_category, fineIndex, wQCD );
+        }
 
+        if (m_isGGH) { 
           for (int iqcd(0); iqcd < 9; iqcd++) {
             double wQCD = w * higgsWeights.qcd_2017[iqcd] / higgsWeights.nominal;
             TString suffixQCD = TString::Format("_QCD_2017_%s", qcdNames[iqcd].Data());
@@ -349,7 +375,6 @@ EL::StatusCode CouplingAnalysis::execute()
             histoStore()->fillTH2F( "h2_catSTXS"+suffixQCD,   m_category, STXSbin,   wQCD );
             histoStore()->fillTH2F( "h2_fineIndex"+suffixQCD, m_category, fineIndex, wQCD );
           }
-
         }
     
       }

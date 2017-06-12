@@ -65,11 +65,13 @@ systNames = [ 'mu', 'res', 'qm_t', 'pTH60', 'pTH120', 'mig01', 'mig12', 'vbf2j',
 systMap = { cat: { tbin: {} for tbin in binNames } for cat in HG.CatLabels }
 
 hnom = tf.Get( histName )
+#hnom = mergeBinsH2( hnom )
 hnom = getAccHist( hnom )
 for systName in systNames:
   hSystName = '%s_QCD_2017_%s' % (histName, systName)
 
   hsys = tf.Get( hSystName )
+  #hsys = mergeBinsH2( hsys )
   hsys = getAccHist( hsys )
   hsys.Add( hnom, -1 )
   hsys.Divide( hnom )
