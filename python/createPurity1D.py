@@ -136,8 +136,8 @@ drawLabel(0.89,0.95,'tHW')
 gPad.RedrawAxis()
 gPad.SetTicks(1,1)
 
-to = TFile("stack.root","RECREATE")
-hstack.Write("purity1D")
+#to = TFile("stack.root","RECREATE")
+#hstack.Write("purity1D")
 
 can.SaveAs("plots/purity_1D.pdf")
 can.SaveAs("plots/purity_1D.png")

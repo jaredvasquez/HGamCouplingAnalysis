@@ -149,7 +149,7 @@ EL::StatusCode CouplingAnalysis::createOutput()
       histoStore()->createTH2F( "h2_fineIndex"+suffixPDF,  nCats, 1, nCats+1, nIndex, 0, nIndex );
     }
 
-    for (int iqcd(0); iqcd < 8; iqcd++) {
+    for (int iqcd(0); iqcd < 27; iqcd++) {
       TString suffixQCD = TString::Format("_QCD%d",iqcd);
       histoStore()->createTH1F( "h_catSTXS"+suffixQCD,  nCats, 0.5, nCats+0.5 );
       histoStore()->createTH2F( "h2_catSTXS"+suffixQCD,  nCats, 1, nCats+1, nBins, 0, nBins );
@@ -271,8 +271,8 @@ EL::StatusCode CouplingAnalysis::execute()
     }
 
     //std::cout << std::endl << "nominal = " << wInit << std::endl;
-    for (int iqcd(0); iqcd < 8; iqcd++)  {
-      double wQCD = wInit * higgsWeights.qcd[iqcd] / higgsWeights.nominal;
+    for (int iqcd(0); iqcd < 27; iqcd++)  {
+      double wQCD = wInit * higgsWeights.qcd_nnlops[iqcd] / higgsWeights.nominal;
       //std::cout << "QCD(" << iqcd << ") = " << higgsWeights.qcd[iqcd] / higgsWeights.nominal << std::endl;
       TString suffixQCD = TString::Format("_QCD%d",iqcd);
       histoStore()->fillTH1F(  "h_catSTXS"+suffixQCD,   m_category, wQCD );
@@ -358,8 +358,8 @@ EL::StatusCode CouplingAnalysis::execute()
         }
         
         //std::cout << std::endl << "nominal = " << w << std::endl;
-        for (int iqcd(0); iqcd < 8; iqcd++)  {
-          double wQCD = w * higgsWeights.qcd[iqcd] / higgsWeights.nominal;
+        for (int iqcd(0); iqcd < 27; iqcd++)  {
+          double wQCD = w * higgsWeights.qcd_nnlops[iqcd] / higgsWeights.nominal;
           //std::cout << "QCD(" << iqcd << ") = " << higgsWeights.qcd[iqcd] / higgsWeights.nominal << std::endl;
           TString suffixQCD = TString::Format("_QCD%d",iqcd);
           histoStore()->fillTH1F(  "h_catSTXS"+suffixQCD,   m_category, wQCD );
