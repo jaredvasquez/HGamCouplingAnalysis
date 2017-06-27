@@ -9,7 +9,7 @@ tabulate.LATEX_ESCAPE_RULES={}
 sys.dont_write_bytecode = True
 import HGamMoriondCatsBDT as HG
 
-nSys = 8
+nSys = 26
 NPnames  = [ 'ATLAS_QCDScale_ggH%d' % (i+1) for i in xrange(nSys) ]
 procs = ['ggH_NNLOPS']
 
@@ -73,7 +73,8 @@ def pruneSysts( allSys ):
 def getSys():
   sysMap = { p: { cat : {} for cat in HG.CatLabels } for p in procs }
   for proc in procs:
-    tf = ROOT.TFile('output/HGamPDF_{0}/hist-{0}.root'.format(proc))
+    #tf = ROOT.TFile('output/HGamPDF_{0}/hist-{0}.root'.format(proc))
+    tf = ROOT.TFile('output/HGamCoupling_{0}/hist-{0}.root'.format(proc))
     hnom = tf.Get('h_catSTXS')
     for ipdf in xrange(nSys):
       hsys = tf.Get('h_catSTXS_QCD{}'.format(ipdf))

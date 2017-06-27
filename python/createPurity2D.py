@@ -1,5 +1,9 @@
+#!/usr/bin/env python
+
 from ROOT import *
 import prettyplots
+
+import sys; sys.dont_write_bytecode = True
 import HGamMoriondCatsBDT2 as HG
 
 gROOT.SetBatch(1)

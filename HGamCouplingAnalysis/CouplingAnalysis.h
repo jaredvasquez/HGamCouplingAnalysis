@@ -21,6 +21,7 @@ private:
   HG::SystematicList sysList;
   
   TTree *m_tree; //!
+  int m_NQCD;
   int m_category; 
   double m_myy;
   

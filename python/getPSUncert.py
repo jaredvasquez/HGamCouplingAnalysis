@@ -2,8 +2,8 @@ import json
 from ROOT import *
 from HGamMoriondCatsBDT import CatLabels
 
-fnom = TFile('output/HGamCoupling_ttH/hist-ttH.root')
-fsys = TFile('output/HGamCoupling_ttH_Hwpp/hist-ttH_Hwpp.root')
+fnom = TFile('output/HGamPDF_ttH/hist-ttH.root')
+fsys = TFile('output/HGamPDF_ttH_Hwpp/hist-ttH_Hwpp.root')
 
 histName = 'h_catSTXS'
 hnom = fnom.Get( histName )

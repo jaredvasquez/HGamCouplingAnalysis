@@ -57,8 +57,9 @@ def pruneSysts( allSys ):
           pruneSys = True
         elif (abs(lo/hi) > 5 or abs(hi/lo) > 5):
           pruneSys = True
-        #elif (abs(hi) < 0.005 or abs(lo) < 0.005):
+        # ****** IMPORTANT *********
         #elif (abs(hi) < 0.0025 or abs(lo) < 0.0025):
+        #elif (abs(hi) < 0.005 or abs(lo) < 0.005):
         #  pruneSys = True
         elif lo*hi > 0:
           # assume positive correlations when up/down have same trends
