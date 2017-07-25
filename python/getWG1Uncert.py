@@ -3,6 +3,7 @@ import sys
 import json
 import tabulate
 from ROOT import *
+from math import sqrt
 
 tabulate.LATEX_ESCAPE_RULES={}
 sys.dont_write_bytecode = True
@@ -11,11 +12,15 @@ import HGamMoriondCatsBDT as HG
 binNames = ['gg2H_fwdH','gg2H_VBFtopo_jet3veto','gg2H_VBFtopo_jet3','gg2H_0J','gg2H_1J_ptH_0_60','gg2H_1J_ptH_60_120','gg2H_1J_ptH_120_200','gg2H_1J_ptH_gt200','gg2H_ge2J_ptH_0_60','gg2H_ge2J_ptH_60_120','gg2H_ge2J_ptH_120_200','gg2H_ge2J_ptH_gt200']
 binNames = binNames[1:]
 
-mergeBins = [ 1, 2 ]
-#mergeBins = range(1,len(binNames)) # uncomment for production XS uncerts
-print 'Merging bins...'
-for ibin in mergeBins:
-  print '  -', binNames[ibin-1]
+#mergeBinSet = [ [1, 2] ] # WEAK STXS
+#mergeBinSet = [ [7, 11], [1, 2, 8, 9, 10] ] # STRONG STXS
+mergeBinSet = [ range(1,len(binNames)) ] # uncomment for production XS uncerts
+print 'Merging bins:'
+for mergeBins in mergeBinSet:
+  print '-'*30
+  for ibin in mergeBins:
+    print '   -', binNames[ibin-1]
+print '-'*30
 
 
 fmt = '%5.1f'
@@ -35,16 +40,18 @@ def printTable( table, header=None ):
   for row in table: print ' | '.join(row)
 
 def mergeBinsH2( h2 ):
-  for ibin in xrange(0,h2.GetNbinsX()+1):
-    sumBins = sum( [ h2.GetBinContent(ibin, im+2) for im in mergeBins ] )
-    #print ibin
-    for jbin in mergeBins:
-      #print '  -', jbin, h2.GetBinContent( ibin, jbin+2 ), sumBins
-      h2.SetBinContent( ibin, jbin+2, sumBins )
+  for mergeBins in mergeBinSet:
+    for ibin in xrange(0,h2.GetNbinsX()+1):
+      sumBins = sum( [ h2.GetBinContent(ibin, im+2) for im in mergeBins ] )
+      #print ibin
+      for jbin in mergeBins:
+        #print '  -', jbin, h2.GetBinContent( ibin, jbin+2 ), sumBins
+        h2.SetBinContent( ibin, jbin+2, sumBins )
   return h2
 
 def getAccHist(h2):
   h2 = mergeBinsH2(h2)
+  return h2
   for ibin in xrange(1, h2.GetNbinsX()+1):
     for jbin in xrange(1, h2.GetNbinsY()+1):
       err = h2.GetBinContent(ibin, jbin)
@@ -65,12 +72,12 @@ systNames = [ 'mu', 'res', 'qm_t', 'pTH60', 'pTH120', 'mig01', 'mig12', 'vbf2j',
 systMap = { cat: { tbin: {} for tbin in binNames } for cat in HG.CatLabels }
 
 hnom = tf.Get( histName )
-#hnom = getAccHist( hnom ) # uncomment for acceptance uncerts
+hnom = getAccHist( hnom ) # uncomment for acceptance uncerts
 for systName in systNames:
   hSystName = '%s_QCD_2017_%s' % (histName, systName)
 
   hsys = tf.Get( hSystName )
-  #hsys = getAccHist( hsys ) # uncomment for acceptance uncerts
+  hsys = getAccHist( hsys ) # uncomment for acceptance uncerts
   hsys.Add( hnom, -1 )
   hsys.Divide( hnom )
 
@@ -121,5 +128,15 @@ for catName in HG.CatLabels:
   if len(systMap[catName]) == 0:
     del systMap[catName]
 json.dump(systMap, open('ggFQCD.json','wb'))
+
+print ''
+for icat, catName in enumerate(HG.CatLabels):
+  uncert = 0
+  if not catName in systMap: continue
+  for sysName in systMap[catName][binNames[2]]:
+    err = max(systMap[catName][binNames[2]][sysName][:2])
+    uncert += err**2
+  print '%25s : %3.0f%%' % (catName, 100.*sqrt(uncert))
+
 
 print ''

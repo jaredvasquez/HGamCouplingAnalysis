@@ -2,7 +2,7 @@ import math
 import ROOT
 import tabulate
 import numpy as np
-import HGamMoriondCatsBDT as HG
+import HGamMoriondCatsBDT2 as HG
 
 #--------------------------------------------------------------------
 def fixName(p):
@@ -27,7 +27,7 @@ def printTable(tab, headers=None):
   ncols = len(tab[0])
   print '\\begin{tabular}{r|c|%s}' % ('r'*(ncols-2))
   print ' & & \multicolumn{9}{c}{Composition [\%]} \\\\'
-  tmp = '%18s' + ' & %6s'*(ncols-1) + ' \\\\'
+  tmp = '%32s' + ' & %6s'*(ncols-1) + ' \\\\'
   if headers:
     print tmp % tuple(headers)
     print '\hline'
